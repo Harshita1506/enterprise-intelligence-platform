@@ -1,0 +1,30 @@
+"""Configuration for the entire platform."""
+from pathlib import Path
+
+# Base paths using pathlib (cleaner and more robust than os.path)
+# This assumes config.py is inside src/core/
+BASE_DIR = Path(__file__).resolve().parents[2]
+DATA_DIR = BASE_DIR / "data"
+CHROMA_DIR = BASE_DIR / "chroma_db"
+
+# Ollama models optimized for 16GB RAM running entirely on CPU
+LLM_MODEL = "qwen2.5:7b"        # Main reasoning model
+EMBEDDING_MODEL = "nomic-embed-text"  # Vector embedding model
+
+# Text Processing Hyperparameters
+CHUNK_SIZE = 500       # Maximum characters per sliced chunk
+CHUNK_OVERLAP = 50     # Overlapping characters between consecutive chunks
+TOP_K = 5              # Number of relevant document chunks to pull during retrieval
+
+# Validated System Projects (Dictionary mapping internal IDs to Display Names)
+PROJECTS = {
+    "customer_portal": {
+        "display_name": "Customer Portal"
+    },
+    "inventory_management_ai": {
+        "display_name": "Inventory Management AI"
+    },
+    "healthcare_appointment_system": {
+        "display_name": "Healthcare Appointment System"
+    }
+}

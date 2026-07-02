@@ -1,0 +1,64 @@
+PROJECT ALPHA REQUIREMENTS
+
+Project Name: Customer Portal Modernization
+
+Client: ABC Finance Ltd.
+
+Project Manager: Sarah Johnson
+
+Tech Lead: Alex Kumar
+
+Timeline:
+12 Weeks
+
+Budget:
+$150,000
+
+Objective:
+Develop a modern customer self-service portal allowing users to manage accounts, make payments, download statements and raise support requests.
+
+Functional Requirements
+
+• Secure Login using OAuth2
+• Dashboard with Account Summary
+• Payment Gateway Integration
+• Download Monthly Statements
+• Customer Support Ticket Module
+• Admin Analytics Dashboard
+
+Technology Stack
+
+Frontend:
+React.js
+
+Backend:
+FastAPI
+
+Database:
+PostgreSQL
+
+Authentication:
+OAuth2
+
+Deployment:
+AWS
+
+Milestones
+
+Week 2
+Database Design
+
+Week 4
+Authentication Module
+
+Week 6
+Dashboard
+
+Week 8
+Payments
+
+Week 10
+Testing
+
+Week 12
+Production Release
