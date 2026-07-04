@@ -18,13 +18,10 @@ TOP_K = 5              # Number of relevant document chunks to pull during retri
 
 # Validated System Projects (Dictionary mapping internal IDs to Display Names)
 PROJECTS = {
-    "customer_portal": {
-        "display_name": "Customer Portal"
-    },
-    "inventory_management_ai": {
-        "display_name": "Inventory Management AI"
-    },
-    "healthcare_appointment_system": {
-        "display_name": "Healthcare Appointment System"
-    }
+    "customer_portal": "Customer Portal Modernization",
+    "inventory_management_ai": "Inventory Management AI",
+    "healthcare_appointment_system": "Healthcare Appointment System"
 }
+# Knowledge Base Settings
+ENTERPRISE_COLLECTION = "enterprise_knowledge"
+SUPPORTED_FILE_TYPES = {".txt", ".pdf", ".docx"}

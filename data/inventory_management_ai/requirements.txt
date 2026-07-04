@@ -1,0 +1,43 @@
+PROJECT GAMMA REQUIREMENTS
+
+Project Name
+
+Healthcare Appointment Platform
+
+Client
+
+CityCare Hospitals
+
+Objective
+
+Develop a cloud-based appointment booking platform.
+
+Features
+
+Doctor Search
+
+Appointment Booking
+
+Video Consultation
+
+Prescription History
+
+Admin Dashboard
+
+Technology
+
+React
+
+NodeJS
+
+MongoDB
+
+AWS
+
+Timeline
+
+14 Weeks
+
+Budget
+
+$180,000

@@ -1,0 +1,45 @@
+PROJECT BETA REQUIREMENTS
+
+Project Name
+
+Smart Inventory Management
+
+Client
+
+Global Warehouse Pvt Ltd
+
+Objective
+
+Develop an AI-powered inventory prediction system.
+
+Features
+
+Demand Forecasting
+
+Low Stock Alerts
+
+Barcode Integration
+
+Supplier Dashboard
+
+Inventory Analytics
+
+Timeline
+
+16 Weeks
+
+Budget
+
+$220,000
+
+Technology
+
+Python
+
+FastAPI
+
+React
+
+PostgreSQL
+
+TensorFlow

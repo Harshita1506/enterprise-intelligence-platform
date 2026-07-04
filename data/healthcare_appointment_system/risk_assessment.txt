@@ -1,0 +1,25 @@
+RISK ASSESSMENT
+
+High Risk
+
+Model Accuracy below expected threshold.
+
+Medium Risk
+
+GPU availability may delay training.
+
+Medium Risk
+
+Incomplete historical inventory data.
+
+Low Risk
+
+Supplier API documentation delay.
+
+Mitigation
+
+Increase dataset quality.
+
+Schedule GPU usage.
+
+Create backup API mocks.
