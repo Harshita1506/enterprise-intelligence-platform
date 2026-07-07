@@ -4,7 +4,7 @@
 
 ---
 
-## Week 1 – RAG Foundation ✅
+## Week 1 – RAG Foundation 
 
 ### Objective
 
@@ -28,7 +28,7 @@ Completed Successfully
 
 ---
 
-## Week 2 – Enterprise Knowledge Base ✅
+## Week 2 – Enterprise Knowledge Base 
 
 ### Objective
 

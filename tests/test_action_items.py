@@ -1,5 +1,6 @@
 """
-Verifies the Action Item Extraction Engine via the BaseIntelligenceService.
+Verifies the Action Item Extraction Engine.
+Ensures the LLM correctly parses targeted context and outputs a structured list of tasks.
 """
 from src.week2_knowledge_base.knowledge_base import EnterpriseKnowledgeBase
 from src.week3_project_intelligence.tools.intelligence_tools import ProjectIntelligenceTools
@@ -7,7 +8,7 @@ from src.week3_project_intelligence.services.action_items import ActionItemExtra
 
 def run_action_items_test():
     print("=" * 60)
-    print("Test Suite: Action Item Extraction (Framework Validation)")
+    print("Test Suite: Action Item Extraction")
     print("=" * 60 + "\n")
     
     try:
@@ -19,15 +20,12 @@ def run_action_items_test():
         return
 
     try:
+        # Extract tasks from the customer_portal project
         result = extractor.extract_tasks("customer_portal")
         
         if result["success"]:
             collection = result["data"]
-            stats = result["metadata"].get("stats", {})
-            latency = result["metadata"].get("generation_time_sec", "Unknown")
-            
             print(f"\n✅ SUCCESS: Extracted {len(collection.items)} action items!")
-            print(f"⏱️ Generation Time: {latency}s | 📉 Chunks Saved via Deduplication: {stats.get('saved_chunks', 0)}")
             print("-" * 60)
             
             for i, item in enumerate(collection.items, 1):

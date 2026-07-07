@@ -1,15 +1,31 @@
 """
-Ollama LLM and Embeddings setup.
+Core LLM and Embeddings configuration.
+Provides standard completion models for text generation and 
+Chat models for structured outputs and agent workflows.
 """
+from langchain_ollama import OllamaLLM, ChatOllama, OllamaEmbeddings
+from src.core.config import LLM_MODEL, EMBEDDING_MODEL, LLM_TEMPERATURE
 
-from langchain_ollama import OllamaLLM, OllamaEmbeddings
-from src.core.config import LLM_MODEL, EMBEDDING_MODEL
-
-def get_llm(temperature: float = 0.1) -> OllamaLLM:
+def get_llm(temperature: float = LLM_TEMPERATURE) -> OllamaLLM:
     """
-    Returns the configured Ollama LLM.
+    Returns a completion-style LLM.
+    
+    Used by retrieval pipelines that only require text generation
+    without chat semantics, tool calling, or structured outputs.
     """
     return OllamaLLM(
+        model=LLM_MODEL,
+        temperature=temperature,
+    )
+
+def get_chat_llm(temperature: float = LLM_TEMPERATURE) -> ChatOllama:
+    """
+    Returns a chat-based LLM.
+    
+    Used by intelligence services requiring structured outputs,
+    tool calling, and future LangGraph workflows.
+    """
+    return ChatOllama(
         model=LLM_MODEL,
         temperature=temperature,
     )

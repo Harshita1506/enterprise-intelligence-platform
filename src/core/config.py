@@ -8,8 +8,9 @@ DATA_DIR = BASE_DIR / "data"
 CHROMA_DIR = BASE_DIR / "chroma_db"
 
 # Ollama models optimized for 16GB RAM running entirely on CPU
-LLM_MODEL = "qwen2.5:7b"        # Main reasoning model
-EMBEDDING_MODEL = "nomic-embed-text"  # Vector embedding model
+LLM_MODEL = "qwen2.5:7b"            # Main reasoning model
+EMBEDDING_MODEL = "nomic-embed-text" # Vector embedding model
+LLM_TEMPERATURE = 0.1               # Low temperature for enterprise consistency
 
 # Text Processing Hyperparameters
 CHUNK_SIZE = 500       # Maximum characters per sliced chunk

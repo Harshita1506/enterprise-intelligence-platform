@@ -54,3 +54,8 @@ class EnterpriseKnowledgeBase:
             context_blocks.append(f"[Source: {source}]\n{doc.page_content}")
 
         return "\n\n".join(context_blocks)
+    
+    def get_available_projects(self) -> dict:
+        """Returns the dictionary of available enterprise projects."""
+        from src.core.config import PROJECTS
+        return PROJECTS
