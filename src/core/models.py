@@ -5,17 +5,22 @@ Chat models for structured outputs and agent workflows.
 """
 from langchain_ollama import OllamaLLM, ChatOllama, OllamaEmbeddings
 from src.core.config import LLM_MODEL, EMBEDDING_MODEL, LLM_TEMPERATURE
+from typing import Optional
 
-def get_llm(temperature: float = LLM_TEMPERATURE) -> OllamaLLM:
+def get_chat_llm(
+    temperature: float = LLM_TEMPERATURE,
+    **kwargs
+) -> ChatOllama:
     """
-    Returns a completion-style LLM.
-    
-    Used by retrieval pipelines that only require text generation
-    without chat semantics, tool calling, or structured outputs.
+    Returns a chat-based LLM.
+
+    Used by intelligence services requiring structured outputs,
+    tool calling, JSON mode, and LangGraph workflows.
     """
-    return OllamaLLM(
+    return ChatOllama(
         model=LLM_MODEL,
         temperature=temperature,
+        **kwargs
     )
 
 def get_chat_llm(temperature: float = LLM_TEMPERATURE) -> ChatOllama:
@@ -28,6 +33,8 @@ def get_chat_llm(temperature: float = LLM_TEMPERATURE) -> ChatOllama:
     return ChatOllama(
         model=LLM_MODEL,
         temperature=temperature,
+        format=format,
+
     )
 
 def get_embeddings() -> OllamaEmbeddings:

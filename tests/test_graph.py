@@ -1,12 +1,12 @@
 """
-Verifies the Phase A LangGraph Foundation.
+Verifies Phase B LangGraph Orchestration with Conditional Edges.
 """
 from src.week5_agent_workflow.graph import build_workflow
 from src.week5_agent_workflow.state import AgentState
 
-def run_graph_test():
+def run_dynamic_graph_test():
     print("=" * 60)
-    print("Test Suite: Phase A LangGraph Orchestration")
+    print("Test Suite: Phase B Dynamic LangGraph")
     print("=" * 60 + "\n")
     
     try:
@@ -15,34 +15,32 @@ def run_graph_test():
         print(f"❌ Graph initialization failed: {e}")
         return
 
-    query = "What are the blockers for customer_portal?"
-    print(f"Executing Query: '{query}'\n")
+    queries = [
+        "What are the blockers for customer_portal?", # Expected: Router -> Executor -> Synthesizer
+        "Hello! How are you?"                           # Expected: Router -> Synthesizer
+    ]
     
-    # Initialize the raw state
-    initial_state = AgentState(query=query)
-    
-    # Let LangGraph drive the execution
-    final_state = app.invoke(initial_state)
-    
-    print("--- RAW STATE (DEBUG) ---")
-    print(final_state)
-    print("\n✅ SUCCESS: Graph Execution Complete\n")
-    
-    print("--- Final Response ---")
-    print(final_state.get("final_response", "No response generated."))
-    
-    print("\n--- Routing Decision ---")
-    decision = final_state.get("decision")
-    
-    # Robust check for LangGraph serialization (dict vs Pydantic model)
-    if isinstance(decision, dict):
-        print(f"Tool selected: {decision.get('selected_tool', 'Unknown')}")
-    elif decision:
-        print(f"Tool selected: {getattr(decision, 'selected_tool', 'Unknown')}")
+    for query in queries:
+        print(f"Executing Query: '{query}'\n")
+        initial_state = AgentState(query=query)
+        final_state = app.invoke(initial_state)
         
-    print("\n--- Telemetry ---")
-    print(final_state.get("telemetry"))
-    print("=" * 60 + "\n")
+        print(f"✅ SUCCESS: {final_state.get('status')}")
+        print("--- Final Response ---")
+        print(final_state.get("final_response", "No response generated."))
+        
+        decision = final_state.get("decision")
+        if decision:
+            # Print the exact boolean dictating the path
+            requires_tool = getattr(decision, 'requires_tool_execution', 'Unknown')
+            print(f"\n--- Routing Logic ---")
+            print(f"Tool selected : {getattr(decision, 'selected_tool', 'Unknown')}")
+            print(f"Requires Tool : {requires_tool}")
+        
+        print("\n--- Telemetry & Trace ---")
+        print(f"Node History : {' -> '.join(final_state.get('node_history', []))}")
+        print(f"Total Time   : {final_state.get('telemetry').total_latency_sec}s")
+        print("=" * 60 + "\n")
 
 if __name__ == "__main__":
-    run_graph_test()
+    run_dynamic_graph_test()
