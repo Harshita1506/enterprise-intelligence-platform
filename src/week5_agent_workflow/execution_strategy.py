@@ -4,8 +4,12 @@ Deterministically decides the execution path (Chat, Single Tool, Multi-Step)
 without altering the Week 4 Semantic Router.
 """
 from enum import Enum
-from src.week5_agent_workflow.state import AgentState
+from typing import TYPE_CHECKING
+
 from src.week4_agents.schemas import ToolType
+
+if TYPE_CHECKING:
+    from src.week5_agent_workflow.state import AgentState
 
 class ExecutionMode(str, Enum):
     GENERAL_CHAT = "general_chat"
@@ -16,7 +20,7 @@ class ExecutionStrategy:
     """
     Evaluates the Week 4 RoutingDecision to determine Week 5 graph orchestration.
     """
-    def determine(self, state: AgentState) -> ExecutionMode:
+    def determine(self, state: "AgentState") -> ExecutionMode:
         # 1. No Tool Required -> Chat
         if not state.decision or not state.decision.requires_tool_execution:
             return ExecutionMode.GENERAL_CHAT
@@ -32,8 +36,8 @@ class ExecutionStrategy:
         if any(trigger in query_lower for trigger in complex_triggers):
             return ExecutionMode.MULTI_STEP
 
-        # 3. Default to Single Tool if a specific tool was routed
-        if state.decision.selected_tool != ToolType.NONE:
+        # 3. Default to Single Tool if a tool execution is required
+        if state.decision.requires_tool_execution:
             return ExecutionMode.SINGLE_TOOL
 
         # Failsafe fallback

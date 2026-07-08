@@ -1,7 +1,7 @@
 import pytest
 from src.week5_agent_workflow.execution_strategy import ExecutionStrategy, ExecutionMode
 from src.week5_agent_workflow.state import AgentState
-from src.week4_agents.schemas import RoutingDecision, ToolType
+from src.week4_agents.schemas import RouteDecision, ToolType
 
 @pytest.fixture
 def strategy():
@@ -9,9 +9,9 @@ def strategy():
 
 def test_general_chat_routing(strategy):
     """If no tool is required, it must route to General Chat."""
-    decision = RoutingDecision(
+    decision = RouteDecision(
         requires_tool_execution=False, 
-        selected_tool=ToolType.NONE, 
+        selected_tool=ToolType.DIRECT_ANSWER, 
         confidence=1.0, 
         reasoning="Greeting"
     )
@@ -20,7 +20,7 @@ def test_general_chat_routing(strategy):
 
 def test_single_tool_routing(strategy):
     """Explicit single tool requests bypass the Planner."""
-    decision = RoutingDecision(
+    decision = RouteDecision(
         requires_tool_execution=True, 
         selected_tool=ToolType.SUMMARY, 
         confidence=0.9, 

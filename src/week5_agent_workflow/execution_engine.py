@@ -46,24 +46,25 @@ class ExecutionEngine:
                 continue
             
             tool_function = self.tools[tool_name]
-        try:
-                    tool_output = tool_function.invoke(state)
-                    
-                    if tool_output is None:
-                        logger.warning(f"[Project: {state.project_id}] Tool {tool_name.value} returned None.")
-                        results[tool_name] = {"success": True, "data": None, "warning": "Tool executed but returned no data."}
-                    elif isinstance(tool_output, dict) and "success" in tool_output:
-                        # Tool already follows the contract, no need to wrap
-                        results[tool_name] = tool_output
-                    else:
-                        # Wrap raw data outputs
-                        results[tool_name] = {"success": True, "data": tool_output}
-                
-        except Exception as e:
             
-            error_msg = f"Exception during execution of {tool_name.value}: {str(e)}"
-            logger.error(f"[Project: {state.project_id}] {error_msg} | Query: '{state.query}'")
-            # NORMALIZED ERROR OUTPUT
-            results[tool_name] = {"success": False, "error": error_msg}
+            try:
+                tool_output = tool_function.invoke(state)
+                
+                if tool_output is None:
+                    logger.warning(f"[Project: {state.project_id}] Tool {tool_name.value} returned None.")
+                    results[tool_name] = {"success": True, "data": None, "warning": "Tool executed but returned no data."}
+                elif isinstance(tool_output, dict) and "success" in tool_output:
+                    # Tool already follows the contract, no need to wrap
+                    results[tool_name] = tool_output
+                else:
+                    # Wrap raw data outputs
+                    results[tool_name] = {"success": True, "data": tool_output}
+                    
+            except Exception as e:
+                
+                error_msg = f"Exception during execution of {tool_name.value}: {str(e)}"
+                logger.error(f"[Project: {state.project_id}] {error_msg} | Query: '{state.query}'")
+                # NORMALIZED ERROR OUTPUT
+                results[tool_name] = {"success": False, "error": error_msg}
                 
         return results

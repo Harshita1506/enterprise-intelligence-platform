@@ -37,7 +37,7 @@ def test_engine_execution_order_and_normalization():
         requires_multi_step=True
     )
     
-    results = engine.execute(plan, AgentState())
+    results = engine.execute(plan, AgentState(query="Test Query"))
     
     # 1. Verify exact order
     assert execution_trace == ["SUMMARY", "RISK"]
@@ -55,7 +55,7 @@ def test_engine_missing_tool_in_registry():
         requires_multi_step=False
     )
     
-    results = engine.execute(plan, AgentState())
+    results = engine.execute(plan, AgentState(query="Test Query"))
     
     assert results[ToolName.RISK]["success"] is False
     assert "not found in registry" in results[ToolName.RISK]["error"]
