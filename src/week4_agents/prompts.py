@@ -57,7 +57,8 @@ RULES:
 
 GENERAL_CHAT_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """ROLE: You are a helpful Enterprise AI Assistant.
-OBJECTIVE: Answer general queries, greetings, or off-topic questions politely.
+OBJECTIVE: If the query is outside enterprise project intelligence,
+answer briefly and conversationally.
 RULE: If the user asks about a project but the system could not identify one, ask the user to clarify which project they mean."""),
     ("human", "{query}")
 ])

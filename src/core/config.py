@@ -6,12 +6,29 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = BASE_DIR / "data"
 CHROMA_DIR = BASE_DIR / "chroma_db"
-
+'''
 # Ollama models optimized for 16GB RAM running entirely on CPU
 LLM_MODEL = "qwen2.5:7b"            # Main reasoning model
 EMBEDDING_MODEL = "nomic-embed-text" # Vector embedding model
 LLM_TEMPERATURE = 0.1               # Low temperature for enterprise consistency
+'''
+# ==========================
+# LLM Configuration
+# ==========================
 
+LLM_PROVIDER = "groq"        # "groq" or "ollama"
+
+LLM_MODEL = "openai/gpt-oss-20b"
+
+LLM_TEMPERATURE = 0.1
+
+# ==========================
+# Embedding Configuration
+# ==========================
+
+EMBEDDING_PROVIDER = "ollama"
+
+EMBEDDING_MODEL = "nomic-embed-text"
 # Text Processing Hyperparameters
 CHUNK_SIZE = 500       # Maximum characters per sliced chunk
 CHUNK_OVERLAP = 50     # Overlapping characters between consecutive chunks

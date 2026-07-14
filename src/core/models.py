@@ -1,50 +1,125 @@
 """
 Core LLM and Embeddings configuration.
-Provides standard completion models for text generation and
-Chat models for structured outputs and agent workflows.
+
+Provides centralized factory methods for:
+- Completion/Text Generation LLMs
+- Chat LLMs
+- Embedding Models
+
+The public API of this module is intentionally stable.
+All other project layers should only call:
+
+    get_llm()
+    get_chat_llm()
+    get_embeddings()
+
+without caring about the underlying provider.
 """
 
-from langchain_ollama import OllamaLLM, ChatOllama, OllamaEmbeddings
-from src.core.config import LLM_MODEL, EMBEDDING_MODEL, LLM_TEMPERATURE
+import os
 
+from dotenv import load_dotenv
+
+from langchain_ollama import (
+    OllamaLLM,
+    ChatOllama,
+    OllamaEmbeddings,
+)
+
+from langchain_groq import ChatGroq
+
+from src.core.config import (
+    LLM_PROVIDER,
+    LLM_MODEL,
+    EMBEDDING_PROVIDER,
+    EMBEDDING_MODEL,
+    LLM_TEMPERATURE,
+)
+
+load_dotenv()
+
+
+# ---------------------------------------------------------------------
+# LLM Factory
+# ---------------------------------------------------------------------
 
 def get_llm(
     temperature: float = LLM_TEMPERATURE,
-    **kwargs
-) -> OllamaLLM:
+    **kwargs,
+):
     """
-    Returns a completion-style LLM.
+    Returns the project's primary language model.
 
-    Used by retrieval pipelines that only require text generation.
+    For Groq we return ChatGroq.
+    For Ollama we return OllamaLLM.
     """
+
+    if LLM_PROVIDER.lower() == "groq":
+
+        return ChatGroq(
+            model=LLM_MODEL,
+            temperature=temperature,
+            api_key=os.getenv("GROQ_API_KEY"),
+            **kwargs,
+        )
+
     return OllamaLLM(
         model=LLM_MODEL,
         temperature=temperature,
-        **kwargs
+        **kwargs,
     )
 
+
+# ---------------------------------------------------------------------
+# Chat Model Factory
+# ---------------------------------------------------------------------
 
 def get_chat_llm(
     temperature: float = LLM_TEMPERATURE,
-    **kwargs
-) -> ChatOllama:
+    **kwargs,
+):
     """
-    Returns a chat-based LLM.
+    Returns the project's chat model.
 
-    Used by routing, planning, structured outputs,
-    tool calling and LangGraph workflows.
+    Used by:
+    - Week 3 Intelligence Services
+    - Week 4 Agent
+    - Week 5 LangGraph
     """
+
+    if LLM_PROVIDER.lower() == "groq":
+
+        return ChatGroq(
+            model=LLM_MODEL,
+            temperature=temperature,
+            api_key=os.getenv("GROQ_API_KEY"),
+            **kwargs,
+        )
+
     return ChatOllama(
         model=LLM_MODEL,
         temperature=temperature,
-        **kwargs
+        **kwargs,
     )
 
 
-def get_embeddings() -> OllamaEmbeddings:
+# ---------------------------------------------------------------------
+# Embedding Factory
+# ---------------------------------------------------------------------
+
+def get_embeddings():
     """
-    Returns the embedding model used for vector generation.
+    Returns the configured embedding model.
+
+    Currently embeddings remain on Ollama.
     """
-    return OllamaEmbeddings(
-        model=EMBEDDING_MODEL
+
+    if EMBEDDING_PROVIDER.lower() == "ollama":
+
+        return OllamaEmbeddings(
+            model=EMBEDDING_MODEL
+        )
+
+    raise ValueError(
+        f"Unsupported embedding provider: {EMBEDDING_PROVIDER}"
     )
