@@ -4,26 +4,21 @@ const columns = [
   {
     title: "Platform",
     links: [
-      { label: "Enterprise Search", href: "#features" },
-      { label: "Project Intelligence", href: "#features" },
-      { label: "Knowledge Base", href: "#features" },
-      { label: "Risk Analysis", href: "#features" },
-    ],
-  },
-  {
-    title: "Resources",
-    links: [
-      { label: "Project Documentation", href: "#" },
-      { label: "System Architecture", href: "#" },
-      { label: "Technology Stack", href: "#" },
+      { label: "AI Companion", href: "/portal/companion" },
+      { label: "Projects", href: "/portal/projects" },
+      { label: "Knowledge Base", href: "/portal/knowledge" },
     ],
   },
   {
     title: "About",
     links: [
-      { label: "Internship Project", href: "#" },
-      { label: "About InterraIT", href: "#" },
-      { label: "Developer", href: "#" },
+      { label: "Enterprise Intelligence Platform", href: "/" },
+      { label: "Internship Project", href: "/" },
+    ],
+  },
+  {
+    title: "Code",
+    links: [
       { label: "GitHub", href: "#" },
     ],
   },
@@ -59,7 +54,7 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-3">
             {columns.map((column) => (
               <div key={column.title}>
                 <h4 className="text-sm font-semibold text-foreground">
