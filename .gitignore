@@ -1,19 +1,50 @@
-# Virtual Environment
-venv/
+# =========================
+# Python
+# =========================
 
-# Python Cache
+venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
 
-# VS Code
-.vscode/
-
-# Chroma Database
-chroma_db/
-
+# =========================
 # Environment Variables
+# =========================
+
 .env
 
-# OS Files
+# =========================
+# VS Code
+# =========================
+
+.vscode/
+
+# =========================
+# ChromaDB
+# =========================
+
+chroma_db/
+
+# =========================
+# Frontend (Next.js / React)
+# =========================
+
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/dist/
+
+# Optional logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# =========================
+# Operating System
+# =========================
+
 .DS_Store
 Thumbs.db
