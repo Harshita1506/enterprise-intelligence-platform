@@ -1,5 +1,5 @@
 "use client"
-
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { X } from "lucide-react"
@@ -40,22 +40,20 @@ export function WorkspaceSidebar({
       >
         {/* Brand */}
         <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-5">
-          <Link href="/" className="flex items-center gap-2.5">
-            <span
-              aria-label="InterraIT logo"
-              className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold tracking-tight text-primary-foreground"
-            >
-              iT
-            </span>
-            <span className="flex flex-col leading-none">
-              <span className="text-sm font-semibold tracking-tight text-sidebar-foreground">
-                InterraIT
-              </span>
-              <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
-                Intelligence Platform
-              </span>
-            </span>
-          </Link>
+          <Link href="/" className="flex flex-col justify-center">
+  <Image
+    src="/company_logo.png"
+    alt="InterraIT"
+    width={105}
+    height={30}
+    priority
+    className="object-contain"
+  />
+
+  <span className="-mt-4 text-[10px] font-medium text-muted-foreground">
+    Enterprise Intelligence Platform
+  </span>
+</Link>
           <button
             type="button"
             aria-label="Close navigation"

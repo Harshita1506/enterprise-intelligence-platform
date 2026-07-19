@@ -20,19 +20,7 @@ export function ProjectCard({ project }: { project: Project }) {
         <StatusBadge status={project.status} />
       </div>
 
-      {/* Progress */}
-      <div className="mt-4">
-        <div className="flex items-center justify-between text-xs">
-          <span className="text-muted-foreground">Progress</span>
-          <span className="font-medium text-foreground/90">{project.progress}%</span>
-        </div>
-        <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className="h-full rounded-full bg-primary"
-            style={{ width: `${project.progress}%` }}
-          />
-        </div>
-      </div>
+      
 
       {/* AI summary — inline, no border box */}
       <div className="mt-4 flex items-start gap-1.5">

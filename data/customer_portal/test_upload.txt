@@ -1,0 +1,33 @@
+PROJECT PHOENIX
+
+Project Overview
+
+Project Phoenix is an internal AI modernization initiative.
+
+Owner:
+Harshita Singhal
+
+Technology Stack
+
+Frontend:
+Angular
+
+Backend:
+Spring Boot
+
+Database:
+MySQL
+
+Deployment:
+Microsoft Azure
+
+Budget:
+$500,000
+
+Status:
+Planning
+
+Special Code:
+PHOENIX-2026-XYZ
+
+This code is unique and exists only in this uploaded document.

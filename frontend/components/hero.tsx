@@ -1,14 +1,14 @@
 import Link from "next/link"
-import { ArrowRight, Sparkles, ShieldCheck, Activity, FileText } from "lucide-react"
+import { ArrowRight, Sparkles } from "lucide-react"
 import { buttonVariants } from "@/components/ui/button"
 
 export function Hero() {
   return (
     <section
       id="platform"
-      className="relative scroll-mt-24 overflow-hidden pt-32 pb-20 md:pt-40 md:pb-28"
+      className="relative scroll-mt-24 overflow-hidden pt-32 pb-16 md:pt-40 md:pb-20"
     >
-      {/* ambient background */}
+      {/* Ambient background */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -17,6 +17,7 @@ export function Hero() {
             "radial-gradient(60% 50% at 50% 0%, oklch(0.65 0.15 235 / 0.18), transparent 70%)",
         }}
       />
+
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.4]"
@@ -62,6 +63,7 @@ export function Hero() {
               Open Workspace
               <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
+
             <a
               href="#features"
               className={buttonVariants({
@@ -73,71 +75,7 @@ export function Hero() {
             </a>
           </div>
         </div>
-
-        {/* preview panel */}
-        <div className="relative mx-auto mt-16 max-w-5xl">
-          <div className="rounded-2xl border border-border bg-card/60 p-2 shadow-2xl backdrop-blur-xl">
-            <div className="rounded-xl border border-border/60 bg-background/80">
-              <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3">
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="ml-3 text-xs text-muted-foreground">
-                  intelligence.acme-corp.internal
-                </span>
-              </div>
-              <div className="grid gap-4 p-5 sm:grid-cols-3">
-                <PreviewCard
-                  icon={<FileText className="h-4 w-4" />}
-                  title="Project Summary"
-                  body="Q3 Platform migration is 78% complete, tracking 2 days ahead of schedule."
-                />
-                <PreviewCard
-                  icon={<ShieldCheck className="h-4 w-4" />}
-                  title="Risk Detected"
-                  body="Vendor contract renewal lapses in 14 days across 3 active workstreams."
-                  accent
-                />
-                <PreviewCard
-                  icon={<Activity className="h-4 w-4" />}
-                  title="Strategic Insight"
-                  body="Reallocating support capacity could recover 320 engineering hours per quarter."
-                />
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
-  )
-}
-
-function PreviewCard({
-  icon,
-  title,
-  body,
-  accent,
-}: {
-  icon: React.ReactNode
-  title: string
-  body: string
-  accent?: boolean
-}) {
-  return (
-    <div className="rounded-lg border border-border/60 bg-card/60 p-4 text-left">
-      <div className="flex items-center gap-2">
-        <span
-          className={`flex h-7 w-7 items-center justify-center rounded-md ${
-            accent
-              ? "bg-accent/15 text-accent"
-              : "bg-primary/15 text-primary"
-          }`}
-        >
-          {icon}
-        </span>
-        <span className="text-sm font-medium text-foreground">{title}</span>
-      </div>
-      <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground">{body}</p>
-    </div>
   )
 }

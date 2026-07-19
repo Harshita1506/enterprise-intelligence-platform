@@ -1,5 +1,5 @@
 "use client"
-
+import { post } from "@/lib/api"
 import { useEffect, useRef, useState } from "react"
 import {
   ArrowUp,
@@ -16,11 +16,18 @@ import {
 } from "lucide-react"
 import { ConversationHistory } from "@/components/companion/conversation-history"
 import { ExecutionDrawer } from "@/components/companion/execution-drawer"
-import { RichMessage } from "@/components/companion/rich-message"
-import { sampleResponse, loadingStages } from "@/lib/companion-data"
+import { loadingStages } from "@/lib/companion-data"
 import { cn } from "@/lib/utils"
 
-type Message = { role: "user"; text: string } | { role: "assistant" }
+type Message =
+  | {
+      role: "user"
+      text: string
+    }
+  | {
+      role: "assistant"
+      text: string
+    }
 
 const suggestedActions = [
   {
@@ -66,31 +73,63 @@ export function CompanionWorkspace() {
     return () => timers.current.forEach(clearTimeout)
   }, [])
 
-  function send(text: string) {
+  async function send(text: string) {
     const value = text.trim()
-    if (!value || loading) return
-    setInput("")
-    setMessages((m) => [...m, { role: "user", text: value }])
-    setLoading(true)
-    setLoadingStage(0)
 
-    timers.current.forEach(clearTimeout)
-    timers.current = []
-    loadingStages.forEach((_, i) => {
-      if (i === 0) return
-      timers.current.push(setTimeout(() => setLoadingStage(i), i * 700))
-    })
-    timers.current.push(
-      setTimeout(() => {
-        setLoading(false)
-        setMessages((m) => [...m, { role: "assistant" }])
-      }, loadingStages.length * 700 + 300),
-    )
+    if (!value || loading) return
+
+    setInput("")
+
+    // Show the user's message immediately
+    setMessages((m) => [
+      ...m,
+      {
+        role: "user",
+        text: value,
+      },
+    ])
+
+    setLoading(true)
+
+    try {
+      const result = await post("/api/chat", {
+        query: value,
+      })
+
+      setMessages((m) => [
+        ...m,
+        {
+          role: "assistant",
+          text: result.data.response,
+        },
+      ])
+    } catch (error) {
+      console.error(error)
+
+      setMessages((m) => [
+        ...m,
+        {
+          role: "assistant",
+          text: "Unable to contact the backend.",
+        },
+      ])
+    } finally {
+      setLoading(false)
+    }
   }
 
   function handleSelect(id: string) {
     setActiveConversation(id)
-    setMessages([{ role: "user", text: "Summarize Project Alpha" }, { role: "assistant" }])
+    setMessages([
+      { 
+        role: "user", 
+        text: "Summarize Project Alpha" 
+      }, 
+      { 
+        role: "assistant", 
+        text: "Conversation history will be available soon." 
+      }
+    ])
   }
 
   function handleNew() {
@@ -157,7 +196,9 @@ export function CompanionWorkspace() {
                       <Bot className="h-4 w-4" />
                     </span>
                     <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-border bg-card/60 p-4 backdrop-blur">
-                      <RichMessage payload={sampleResponse} />
+                      <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
+                        {m.text}
+                      </div>
                     </div>
                   </div>
                 ),

@@ -1,5 +1,5 @@
 "use client"
-
+import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
 import { Menu, X, ArrowRight } from "lucide-react"
@@ -19,22 +19,20 @@ export function SiteHeader() {
     <header className="fixed inset-x-0 top-0 z-50 border-b border-border/60 bg-background/70 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
         {/* Branding: replace the logo mark below with the official InterraIT logo when available */}
-        <Link href="/" className="flex items-center gap-2.5">
-          <span
-            aria-label="InterraIT logo"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold tracking-tight text-primary-foreground"
-          >
-            iT
-          </span>
-          <span className="flex flex-col leading-none">
-            <span className="text-sm font-semibold tracking-tight text-foreground">
-              InterraIT
-            </span>
-            <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
-              Enterprise Intelligence Platform
-            </span>
-          </span>
-        </Link>
+        <Link href="/" className="flex flex-col justify-center py-1">
+  <Image
+  src="/company_logo.png"
+  alt="InterraIT"
+  width={105}
+  height={30}
+  priority
+  className="object-contain"
+/>
+
+  <span className="-mt-4 text-[10px] font-medium text-muted-foreground">
+    Enterprise Intelligence Platform
+  </span>
+</Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => (

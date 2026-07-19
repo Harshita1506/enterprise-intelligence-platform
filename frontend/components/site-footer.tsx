@@ -1,5 +1,5 @@
 import Link from "next/link"
-
+import Image from "next/image"
 const columns = [
   {
     title: "Platform",
@@ -19,7 +19,7 @@ const columns = [
   {
     title: "Code",
     links: [
-      { label: "GitHub", href: "#" },
+      { label: "GitHub", href: "https://github.com/Harshita1506/enterprise-intelligence-platform" },
     ],
   },
 ]
@@ -31,21 +31,18 @@ export function SiteFooter() {
         <div className="grid gap-10 lg:grid-cols-[1.5fr_2fr]">
           <div>
             {/* Branding: replace the logo mark below with the official InterraIT logo when available */}
-            <Link href="/" className="flex items-center gap-2.5">
-              <span
-                aria-label="InterraIT logo"
-                className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-sm font-bold tracking-tight text-primary-foreground"
-              >
-                iT
-              </span>
-              <span className="flex flex-col leading-none">
-                <span className="text-sm font-semibold tracking-tight text-foreground">
-                  InterraIT
-                </span>
-                <span className="mt-0.5 text-[11px] font-medium text-muted-foreground">
-                  Enterprise Intelligence Platform
-                </span>
-              </span>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                 src="/company_logo.png"
+                 alt="InterraIT"
+                 width={90}
+                 height={22}
+                 priority
+               />
+
+             <span className="text-[11px] font-medium text-muted-foreground">
+               Enterprise Intelligence Platform
+             </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
               An enterprise intelligence platform that centralizes organizational
