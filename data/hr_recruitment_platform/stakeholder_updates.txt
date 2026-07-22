@@ -1,0 +1,50 @@
+Project: NextGen Talent Acquisition Platform (Project HireStream)
+Document Type: Weekly Executive Stakeholder Update
+Reporting Period: Week ending April 20, 2026
+Prepared By: Sarah Johnson (Lead Product Manager)
+To: Rohan Sharma (VP of Global Talent), Executive Steering Committee
+
+1. Executive Summary & Current Health
+
+Overall Project Status: YELLOW (Caution - Compliance and Integration delays)
+
+Budget Health: YELLOW (Additional funds requested for compliance audit)
+
+Timeline Health: YELLOW (At Risk of 1-week delay for M3 milestone)
+
+Scope: AMENDED (AI auto-rejection permanently removed)
+
+Project HireStream has made excellent progress on third-party vendor integrations (Checkr, DocuSign, Microsoft), proving the resilience of our core event-driven architecture. However, internal testing uncovered critical compliance risks regarding our AI resume parser, necessitating an immediate pivot in product scope. We are currently redesigning the AI processing layer and reworking our integration approach with Workday to bypass severe API throttling. We require executive alignment on the updated business metrics resulting from these changes.
+
+2. Major Achievements
+
+Checkr & DocuSign Integrations: The automated background check workflow and eSignature scaffolding are fully operational in the staging environment. This eliminates two of the most time-consuming manual tasks for our recruiting coordinators.
+
+High-Performance Architecture: Stress testing of our Go-based API gateway proved highly successful, handling 5,000 concurrent requests effortlessly, ensuring the platform will remain stable during high-volume campus recruiting events.
+
+Hiring Manager UI: The drag-and-drop Kanban interface for managing candidate pipelines is complete and has received exceptionally positive feedback from the beta testing group of hiring managers.
+
+3. Key Blockers & Risks
+
+AI Algorithmic Bias (Critical Issue): Our legal team identified that the AI resume parser was artificially lowering scores for candidates using multi-column resume formats (failing to extract text correctly) and exhibited subtle biases against certain educational institutions. To prevent EEOC violations, Legal has strictly forbidden the system from automatically rejecting any candidate.
+
+Workday API Throttling: Our attempts to sync organizational and cost-center data from the legacy Workday HRIS are failing due to aggressive API throttling from Workday's servers. We are currently forced to use mocked data in staging.
+
+KPI Degradation: Because recruiters must now manually review all candidates (due to the removal of AI auto-reject), we project that our goal to reduce "Time-to-Fill" by 30% is no longer mathematically possible.
+
+4. Executive Recommendations & Escalations
+
+Approve AI Audit Budget (Action Required): We urgently request approval for a $25,000 reallocation of budget to hire an external algorithmic auditing firm. They will certify our reworked AI ranking model to ensure total EEOC compliance and legal protection before Go-Live.
+
+Reset Business Expectations: I recommend that Rohan Sharma communicate the revised scope to the HR leadership team. The AI will act as a highly intelligent sorting tool, bringing the best candidates to the top of the pile, but it will not autonomously curate the pipeline. We need to revise our ROI metrics accordingly.
+
+5. Upcoming Milestones (Next 14 Days)
+
+April 24: Complete the redesign of the Workday data synchronization utilizing paginated, throttled API requests.
+
+April 26: Deploy the updated OCR-based AI resume processing engine to staging for a secondary bias review.
+
+May 10: Target date for completion of the external AI compliance audit.
+
+6. Client/Business Expectations
+Despite the friction with the AI engine, the platform remains highly transformational. The automation of scheduling, background checks, and offer letters will still drastically improve recruiter efficiency and the candidate experience. The platform Go-Live remains loosely targeted for July, pending the results of the external AI audit.

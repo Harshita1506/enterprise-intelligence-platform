@@ -1,6 +1,11 @@
 """
-Centralized semantic queries for project intelligence.
+Centralized semantic queries and prompts for project intelligence.
 """
+from langchain_core.prompts import ChatPromptTemplate
+
+# ---------------------------------------------------------------------------
+# RETRIEVAL QUERIES
+# ---------------------------------------------------------------------------
 
 REQUIREMENTS_QUERY = """
 What are the core project requirements, technical specifications, 
@@ -16,39 +21,65 @@ SPRINT_REPORTS_QUERY = """
 What is the current sprint status, timeline progress, 
 completed tasks, and what are the current blockers?
 """
-from langchain_core.prompts import ChatPromptTemplate
+
+# ---------------------------------------------------------------------------
+# LLM PROMPTS
+# ---------------------------------------------------------------------------
 
 SUMMARY_PROMPT = ChatPromptTemplate.from_messages([
-    ("system", """You are an elite Enterprise Project Manager AI. 
-Analyze the project intelligence and generate a comprehensive executive summary.
-You must extract any action items, blockers, and risks explicitly.
-Generate your response to perfectly match the required schema structure. 
-Do not include any conversational filler."""),
-    ("human", "PROJECT INTELLIGENCE:\n{context}")
+    ("system", """You are an Enterprise Project Intelligence Assistant.
+
+Generate a concise executive briefing for a project manager or executive stakeholder. 
+Focus on the information most useful for decision-making.
+
+Rules:
+- Executive summary: maximum 3 sentences.
+- Overall progress: one short sentence.
+- Return no more than 5 pending action items.
+- Return no more than 3 project risks.
+- Each action item should be one sentence.
+- Each risk should be one sentence.
+- Never repeat information.
+- Never invent information.
+- Keep every field concise.
+- Strictly follow the output schema."""),
+    ("human", "PROJECT CONTEXT:\n{context}")
 ])
 
 ACTION_ITEMS_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """ROLE: You are an elite Enterprise Project Manager AI.
 
-OBJECTIVE: Scan the provided meeting notes and sprint reports to extract EVERY pending task, action item, or blocker.
+OBJECTIVE: Identify the most important pending work.
 
-CONSTRAINTS:
+Rules:
+- Return at most 8 action items.
+- If fewer than 8 action items exist, return only those found. Do not invent additional tasks.
+- Prioritize blockers first.
+- Then overdue work.
+- Then high-impact work.
+- Ignore completed tasks.
 - If a person is mentioned as responsible, assign them as the 'owner'.
 - If no one is mentioned, set the owner to 'Unassigned'.
 - Do not include any conversational filler.
-
-OUTPUT FORMAT: Generate your response to perfectly match the required JSON schema structure."""),
+- Strictly follow the output schema."""),
     ("human", "MEETING NOTES & SPRINT REPORTS:\n{context}")
 ])
+
 RISK_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages([
     ("system", """ROLE: You are an elite Enterprise Project Risk Analyst.
 
-OBJECTIVE: Analyze the project context to identify hidden threats, blockers, and dependencies.
+OBJECTIVE: Identify ONLY the highest-priority risks that require management attention.
 
-ANALYSIS INSTRUCTIONS:
-- Base all risks strictly on the provided context (Requirements, Meeting Notes, Sprint Reports).
-- Never invent risks. Every risk must be supported by evidence.
-- Do NOT classify feature requests, enhancements, or improvement suggestions as risks unless they explicitly threaten project success.
+Rules:
+- Return between 0 and 5 risks.
+- Base every identified risk strictly on the provided context.
+- If the evidence is insufficient, return an empty list.
+- Each risk should contain:
+    • title
+    • severity
+    • one-sentence reasoning
+    • one-sentence recommendation
+- Ignore low-impact observations.
 - If a blocker contradicts a Requirement, flag as 'Critical'.
 
 SEVERITY GUIDELINES:

@@ -1,0 +1,60 @@
+Project: Customer Portal Modernization (Project Nova)
+Meeting Type: Sprint 14 Client & Stakeholder Alignment
+Date: February 12, 2026
+Duration: 60 minutes
+Attendees: Sarah Johnson (Product), Alex Kumar (Frontend Lead), Priya Patel (Backend Lead), Michael Chen (DevOps), Emily Davis (QA), Rohan Sharma (VP of E-Commerce / Sponsor)
+
+1. Meeting Summary
+The primary focus of this meeting was to review the progress of the Stripe payment gateway integration and the SAP order synchronization module. The Next.js frontend UI components are largely completed and have passed initial accessibility checks. However, backend integration is facing severe friction due to unexpected limitations with the legacy SAP staging environment and API rate limits on our Stripe sandbox account.
+
+2. Key Decisions Made
+
+Auth0 MFA Deferral: Based on Alex Kumar’s presentation regarding the UX complexities of custom Multi-Factor Authentication screens, Rohan Sharma approved the decision to defer custom MFA flows to Phase 2 (post-launch). We will use Auth0's out-of-the-box universal login page for MFA in Phase 1 to save 2 weeks of frontend development time.
+
+SAP Caching Strategy: Priya Patel proposed using Redis to cache SAP order history data for 24 hours to bypass the 50 request/second hard limit on the legacy ERP. This was approved, with the caveat that order status updates (e.g., "Shipped") must trigger a cache invalidation via a webhook.
+
+Vendor Escalation: It was decided that Sarah Johnson will formally escalate the Stripe rate limit issue to our enterprise account manager, as it is actively blocking load testing.
+
+3. Discussion Details & Blockers
+
+Stripe API Delay: Priya Patel noted that the PaymentIntent API integration is currently at 65% completion. The backend team is consistently hitting the Stripe sandbox rate limits during automated end-to-end testing, causing false negatives in the CI/CD pipeline.
+
+SAP Staging Downtime: Michael Chen reported that the SAP staging environment went down for 48 hours over the weekend without prior notice from the enterprise IT team. This completely halted QA’s ability to test the order history UI.
+
+Frontend Velocity: Alex Kumar reported that the frontend team is actually ahead of schedule. The loyalty dashboard UI is fully responsive and merged into the develop branch.
+
+4. Action Items & Assigned Owners
+
+[Action Item]: Open an emergency support ticket with the enterprise IT team to guarantee 99% uptime for the SAP staging environment during our QA phases.
+
+Owner: Michael Chen
+
+Due Date: Feb 13, 2026
+
+[Action Item]: Contact Stripe Enterprise Support to request a temporary quota increase for the sandbox environment to unblock CI/CD pipeline tests.
+
+Owner: Sarah Johnson
+
+Due Date: Feb 13, 2026
+
+[Action Item]: Implement the Redis caching layer for the /api/v2/orders endpoint and write unit tests for cache invalidation logic.
+
+Owner: Priya Patel
+
+Due Date: Feb 18, 2026
+
+[Action Item]: Update the QA automation scripts to mock Stripe responses if the rate limit is exceeded, preventing full pipeline failures.
+
+Owner: Emily Davis
+
+Due Date: Feb 15, 2026
+
+[Action Item]: Update the project timeline documentation to reflect the deferral of custom MFA UI to Phase 2.
+
+Owner: Alex Kumar
+
+Due Date: Feb 14, 2026
+
+5. Pending Approvals
+
+Awaiting budget sign-off from Rohan Sharma for the upgraded Datadog log retention tier (requesting 30-day retention instead of the standard 15-day).

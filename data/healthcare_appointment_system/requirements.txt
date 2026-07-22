@@ -1,45 +1,64 @@
-PROJECT BETA REQUIREMENTS
+Project Name: Intelligent Patient Scheduling Platform (Project CareFlow)
+Document Version: 3.1.0
+Industry: Healthcare
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: May 10, 2025
 
-Project Name
+1. Project Objectives
+Project CareFlow is a strategic initiative to modernize the patient access experience across our network of 45 outpatient clinics. The current legacy appointment system relies entirely on manual call-center routing and a fragmented, on-premises electronic health record (EHR) scheduling module. This results in high call-abandonment rates and an unacceptable 18% patient no-show rate. CareFlow will introduce a cloud-native, patient-facing web and mobile self-scheduling platform. The core business objectives are to reduce call center volume by 40%, decrease no-show rates by 25% through automated omnichannel reminders, and increase overall clinic utilization by dynamically surfacing canceled appointment slots to waitlisted patients.
 
-Smart Inventory Management
+2. Scope
+The scope of Phase 1 includes the patient-facing web application, authenticated patient portal (Single Sign-On with existing patient credentials), and the backend integration via HL7 FHIR (Fast Healthcare Interoperability Resources) APIs with our legacy CareSync EHR system. Phase 1 also covers the integration of Twilio for SMS and voice reminders. Telehealth video consultation infrastructure and specialty-referral automated routing are explicitly out of scope for Phase 1 and will be addressed in Q4 2026.
 
-Client
+3. Functional Requirements
 
-Global Warehouse Pvt Ltd
+Self-Service Scheduling: Patients must be able to view real-time provider availability, book, reschedule, or cancel appointments without human intervention.
 
-Objective
+EHR Bidirectional Sync: The system must read provider schedules and write new appointments back to the CareSync EHR in real-time utilizing FHIR R4 standard APIs.
 
-Develop an AI-powered inventory prediction system.
+Automated Waitlist Management: When an appointment is canceled, the system must automatically text the next three patients on the waitlist with a limited-time offer to claim the open slot.
 
-Features
+Omnichannel Reminders: Automated SMS, email, and automated voice calls must be sent at 72-hour, 24-hour, and 2-hour intervals prior to the appointment.
 
-Demand Forecasting
+4. Non-Functional Requirements
 
-Low Stock Alerts
+Compliance & Security: The entire platform must maintain strict HIPAA (Health Insurance Portability and Accountability Act) compliance. All Protected Health Information (PHI) and Electronic Protected Health Information (ePHI) must be encrypted in transit (TLS 1.3) and at rest (AES-256). Business Associate Agreements (BAAs) must be executed with all cloud vendors.
 
-Barcode Integration
+Availability: The patient-facing scheduling portal must achieve 99.95% uptime.
 
-Supplier Dashboard
+Performance: Appointment search queries across the 45-clinic network must return results within 500 milliseconds.
 
-Inventory Analytics
+Audit Logging: Every view, modification, or deletion of a patient record must be logged immutably for compliance auditing, retaining data for a minimum of 7 years.
 
-Timeline
+5. Technical Stack
 
-16 Weeks
+Frontend: React Native (Mobile), React 18 with Next.js (Web), TailwindCSS.
 
-Budget
+Backend: Node.js, Express.js microservices, Apollo GraphQL.
 
-$220,000
+Integration Layer: Mirth Connect (NextGen Connect) for HL7/FHIR translation.
 
-Technology
+Database: MongoDB Atlas (HIPAA Eligible Tier) for patient preferences; Redis for caching provider availability.
 
-Python
+Cloud Infrastructure: AWS (Amazon Web Services) - EKS, API Gateway, CloudWatch, all provisioned within a dedicated Virtual Private Cloud (VPC) under our enterprise BAA.
 
-FastAPI
+6. API Specifications (Key Endpoints)
 
-React
+GET /api/v1/fhir/Slot: Queries the EHR for available appointment slots based on provider ID and date range.
 
-PostgreSQL
+POST /api/v1/fhir/Appointment: Writes a new appointment resource back to the CareSync EHR.
 
-TensorFlow
+POST /api/v1/communications/sms: Triggers the Twilio integration for outbound reminders.
+
+7. Architecture
+CareFlow employs a microservices architecture hosted on AWS EKS. The frontend interacts with an API Gateway that routes requests to the Scheduling Service, Patient Service, or Notification Service. To bridge the gap with the on-premise CareSync EHR, an AWS Site-to-Site VPN is utilized, routing FHIR traffic through Mirth Connect, which translates modern JSON payloads into legacy HL7 v2 messages when necessary.
+
+8. Milestones & Deadlines
+
+M1: Security Architecture Review & BAA Execution: Completed by June 15, 2025.
+
+M2: FHIR Read-API Integration (Provider Schedules): Target August 20, 2025.
+
+M3: Twilio SMS & Waitlist Engine: Target September 30, 2025.
+
+M4: FHIR Write-API Integration (Booking): Target October 25, 2025.

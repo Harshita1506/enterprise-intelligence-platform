@@ -1,0 +1,50 @@
+Project: Global Factory Command Center (Project Forge)
+Document Type: Weekly Executive Stakeholder Update
+Reporting Period: Week ending March 07, 2026
+Prepared By: Sarah Johnson (Lead Product Manager)
+To: Rohan Sharma (VP of Manufacturing), Executive Steering Committee
+
+1. Executive Summary & Current Health
+
+Overall Project Status: YELLOW (Caution - Hardware Blockers)
+
+Budget Health: YELLOW (Additional CapEx required for Edge Hardware)
+
+Timeline Health: YELLOW (Ohio Plant integration delayed by 4 weeks)
+
+Scope: AMENDED (Architecture shifted to Edge Computing)
+
+Project Forge has successfully proven its core value proposition, but we have encountered harsh realities regarding the integration of legacy factory equipment. The Texas facility (our modernized plant) is fully online; executives can now view live OEE and digital twin visualizations with sub-second latency. However, attempting to scale this cloud-only architecture to the aging equipment in the Ohio plant caused severe network saturation and failure. We are executing an emergency architectural pivot to install Edge Computing hardware on the Ohio factory floor, which requires an immediate CapEx injection and alters our rollout timeline.
+
+2. Major Achievements
+
+Texas Plant Live: The Texas facility is fully integrated. For the first time, corporate leadership can view live, standardized OEE metrics (Availability, Performance, Quality) flowing from the injection molding lines into the React/Grafana dashboard.
+
+Predictive Maintenance Model Deployed: The PyTorch anomaly detection model is actively monitoring the Texas machinery and successfully identified a degrading hydraulic pump 3 days before expected failure, proving the core ROI hypothesis of the project.
+
+Security Compliance: The strict IT/OT airgap design has passed the initial penetration testing by our internal InfoSec team, ensuring the factory floor remains insulated from corporate network vulnerabilities.
+
+3. Key Blockers & Risks
+
+Ohio Network Saturation (Critical Blocker): The legacy PLCs in Ohio produce highly noisy, raw data. Streaming this directly to AWS crashed our data ingestion pipelines and saturated the plant's internet connection. We are completely blocked on the Ohio integration until we process this data locally.
+
+Supply Chain Delays: To fix the network issue, we must deploy industrial Edge servers to Ohio to filter the data. These servers have a 4-week supply chain lead time, pushing the Ohio Go-Live milestone into late April.
+
+IT/OT Friction: Strict, necessary security policies prevent remote debugging of factory equipment. Our engineers must physically travel to Ohio to configure local network settings, reducing overall development velocity.
+
+4. Executive Recommendations & Escalations
+
+CapEx Approval Required: I have submitted an emergency CapEx request for $45,000 to procure the Dell Edge Gateway servers required for the Ohio plant. I recommend Rohan Sharma expedite approval with Finance immediately to minimize the 4-week supply chain delay.
+
+Timeline Decoupling: I recommend we officially decouple the Ohio and Munich milestones. We will proceed with integrating the Munich facility (which possesses modern, cloud-ready SCADA systems) next week, leaving Ohio paused until the Edge hardware arrives. This maintains project momentum.
+
+5. Upcoming Milestones (Next 14 Days)
+
+March 10: Commence data integration with the Munich facility.
+
+March 15: Complete the development of the localized Edge Machine Learning scripts in a simulated environment.
+
+March 20: Original M3 Deadline for Ohio & Munich. (Munich on track; Ohio will miss this date).
+
+6. Client/Business Expectations
+The business should celebrate the successful launch of the Texas dashboard, which looks phenomenal and operates flawlessly. However, plant managers across legacy facilities must be advised that achieving this level of visibility will require localized hardware upgrades. The "plug-and-play" cloud approach is only viable for our newest machinery.

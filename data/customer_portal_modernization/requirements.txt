@@ -1,0 +1,80 @@
+Project Name: Customer Portal Modernization (Project Nova)
+Document Version: 2.4.1
+Industry: Retail / E-Commerce
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: October 12, 2025
+
+1. Project Objectives
+The primary objective of Project Nova is to completely overhaul the legacy monolithic customer portal for our global e-commerce retail platform. The current system, built on a tightly coupled PHP backend and aging on-premises infrastructure, suffers from poor performance during peak holiday traffic, creating a bottleneck for revenue growth. This modernization effort will migrate the portal to a decoupled, cloud-native microservices architecture on AWS. The new portal aims to improve page load speeds by 60%, increase checkout conversion rates by 15%, and reduce infrastructure maintenance costs by 25% annually.
+
+2. Scope
+The scope of this project encompasses the entire authenticated customer journey. This includes the login/registration flow, user profile management, address and payment method vaults, order history and tracking, and the integration of a new loyalty rewards dashboard. The public-facing product catalog and unauthenticated cart are explicitly out of scope for this phase and will be handled under Project Orion in Q3 2026.
+
+3. Functional Requirements
+
+Authentication & Authorization: Implement Single Sign-On (SSO) utilizing Auth0. Users must be able to log in via email/password, Google Workspace, and Apple ID. The system must support role-based access control (RBAC) for standard users, premium loyalty members, and customer support impersonation.
+
+Order Management: Integrate with the legacy SAP ERP system to fetch real-time order status, shipping updates, and historical invoices. Users must be able to initiate self-service returns and download PDF receipts.
+
+Payment Gateway Integration: Deprecate the legacy Authorize.net integration and implement the Stripe API for handling saved credit cards, Apple Pay, and Google Pay. All payment tokenization must occur client-side to ensure no sensitive card data touches our internal servers.
+
+Loyalty Dashboard: A new module displaying the user's current point balance, VIP tier status, and available redemption offers, driven by the existing Salesforce CRM backend.
+
+4. Non-Functional Requirements
+
+Performance: All API responses under the /api/v2/customer namespace must return within 200ms at the 95th percentile under a load of 10,000 concurrent users.
+
+Availability: The portal must achieve 99.99% uptime, excluding planned maintenance windows.
+
+Compliance & Security: The entire application must be PCI-DSS Level 1 compliant. The frontend UI must adhere strictly to ADA WCAG 2.1 AA accessibility standards. All data at rest must be encrypted using AES-256 via AWS KMS.
+
+Scalability: The architecture must auto-scale to handle a 5x traffic surge within 3 minutes to accommodate flash sales and Black Friday events.
+
+5. Technical Stack
+
+Frontend: React 18, Next.js 14 (App Router), TailwindCSS, TypeScript. State management via Redux Toolkit.
+
+Backend: Node.js v20, NestJS framework, GraphQL API gateway (Apollo Federation).
+
+Database & Caching: Amazon Aurora PostgreSQL (Serverless v2) for transactional data, Amazon ElastiCache (Redis) for session state and rate limiting.
+
+Infrastructure: AWS EKS (Elastic Kubernetes Service), AWS API Gateway, CloudFront CDN, Terraform for Infrastructure as Code (IaC).
+
+Observability: Datadog for APM and log aggregation, PagerDuty for incident alerting.
+
+6. API Specifications (Key Endpoints)
+
+POST /api/v2/auth/login: Handles Auth0 token exchange.
+
+GET /api/v2/orders/{userId}: Retrieves paginated order history from SAP.
+
+POST /api/v2/payments/intent: Initiates a Stripe PaymentIntent for modifying saved billing methods.
+
+7. Architecture
+The system follows an event-driven microservices pattern. The Next.js frontend is served via AWS CloudFront. API requests pass through the AWS API Gateway to the NestJS GraphQL federation layer, which orchestrates calls to domain-specific microservices (User Service, Order Service, Payment Service). Asynchronous tasks, such as triggering email confirmations, are handled via AWS SQS and SNS topics.
+
+8. Milestones & Deadlines
+
+M1: Architecture Review & Environment Provisioning: Completed by Nov 15, 2025.
+
+M2: Auth0 Integration & UI Component Library: Target Dec 20, 2025.
+
+M3: Stripe Integration & SAP Order Sync: Target Feb 28, 2026.
+
+M4: UAT & Security Penetration Testing: Target April 10, 2026.
+
+M5: Production Go-Live (Blue/Green Deployment): Target May 05, 2026.
+
+9. Success Metrics
+
+Average authentication time reduced to < 1.5 seconds.
+
+Zero P1 (Critical) security vulnerabilities in the final code audit.
+
+Less than 1% error rate on the Stripe PaymentIntent API during peak load testing.
+
+10. Constraints & Assumptions
+
+The legacy SAP ERP cannot handle more than 50 API calls per second. We must implement a robust caching layer for historical order data to prevent overwhelming the SAP backend.
+
+Budget is capped at $1.2M for external vendor licensing (Auth0, Datadog, Stripe enterprise support).

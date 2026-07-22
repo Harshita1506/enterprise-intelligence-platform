@@ -27,7 +27,7 @@ from langchain_ollama import (
 )
 
 from langchain_groq import ChatGroq
-
+from langchain_openai import ChatOpenAI
 from src.core.config import (
     LLM_PROVIDER,
     LLM_MODEL,
@@ -55,6 +55,7 @@ def get_llm(
     """
 
     if LLM_PROVIDER.lower() == "groq":
+    
 
         return ChatGroq(
             model=LLM_MODEL,
@@ -62,6 +63,14 @@ def get_llm(
             api_key=os.getenv("GROQ_API_KEY"),
             **kwargs,
         )
+    elif LLM_PROVIDER.lower() == "openrouter":
+        return ChatOpenAI(
+        model=LLM_MODEL,
+        temperature=temperature,
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1",
+        **kwargs,
+    )
 
     return OllamaLLM(
         model=LLM_MODEL,
@@ -95,6 +104,14 @@ def get_chat_llm(
             api_key=os.getenv("GROQ_API_KEY"),
             **kwargs,
         )
+    elif LLM_PROVIDER.lower() == "openrouter":
+        return ChatOpenAI(
+        model=LLM_MODEL,
+        temperature=temperature,
+        api_key=os.getenv("OPENROUTER_API_KEY"),
+        base_url="https://openrouter.ai/api/v1",
+        **kwargs,
+    )
 
     return ChatOllama(
         model=LLM_MODEL,

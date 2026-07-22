@@ -1,0 +1,65 @@
+Project: Automated Inventory Intelligence (Project Sentinel)
+Sprint Name: Sprint 6 - ML Baseline & Supplier Integrations
+Sprint Dates: October 15, 2025 – October 29, 2025
+Scrum Master: Sarah Johnson
+
+1. Sprint Executive Summary
+Sprint 6 was a highly complex iteration focused on establishing our first machine learning baselines and connecting to external supplier APIs. The engineering team successfully completed the core Azure Data Factory pipelines and finalized the Vue.js frontend architecture. However, the data science deliverables were heavily impacted by the discovery of systemic data quality issues within Oracle NetSuite. Additionally, integration with our primary supplier, FastenCo, had to be completely redesigned from a REST API approach to a batch SFTP approach. As a result, several key machine learning and backend tickets have spilled over into Sprint 7.
+
+2. Sprint Metrics
+
+Committed Story Points: 115
+
+Completed Story Points: 78
+
+Spillover Points: 37
+
+Team Velocity: 85 (Rolling 3-sprint average)
+
+Code Coverage: 79.1% (Backend), 92.4% (Frontend)
+
+Open Bugs: 7 (1 Critical, 3 High, 3 Low)
+
+3. Completed Tasks & Achievements
+
+SNT-210: Provision AKS cluster and configure staging environments via Terraform. (13 points) - Completed
+
+SNT-214: Develop Vue.js dashboard layout and global navigation shell. (8 points) - Completed
+
+SNT-218: Implement Azure Active Directory (AAD) SSO for the procurement portal. (13 points) - Completed
+
+SNT-222: Build Azure Data Factory pipeline to ingest daily inventory snapshots from NetSuite. (21 points) - Completed
+
+SNT-225: Finalize UI mockups for the "Draft PO Approval" screen. (5 points) - Completed
+
+Team Achievement: The DevOps team successfully reduced the CI/CD pipeline build time from 18 minutes to 6 minutes by optimizing Docker layer caching.
+
+4. Pending Work (Spillover to Sprint 7)
+
+SNT-230: Train baseline XGBoost demand forecasting model. (13 points) - Blocked by SNT-241
+
+SNT-233: Implement real-time availability polling for FastenCo API. (8 points) - Abandoned/Repurposed due to vendor API limitations. Will be converted to SFTP ticket.
+
+SNT-241: Clean and impute missing "Actual Delivery Date" values in historical NetSuite PO data. (16 points) - In Progress
+
+5. Current Blockers & Issues
+
+Dirty Historical Data (Critical): The machine learning models cannot accurately calculate supplier lead times because 35% of the legacy Oracle NetSuite data is missing receiving dates. The data science team is actively writing scripts to scrape warehouse logs to backfill this data, stalling all model training.
+
+Supplier API Capabilities: FastenCo cannot support our required API polling frequency. The backend architecture had to be redesigned mid-sprint to accommodate a legacy batch file transfer system, resulting in lost engineering hours.
+
+6. Technical Debt & Quality Notes
+
+Data Imputation Debt: The scripts being written to backfill NetSuite data from warehouse logs are highly fragile and specific to this one-time migration. We are accepting this technical debt to unblock the ML team, but these scripts must not be merged into the master production pipeline.
+
+Critical Bug SNT-255: The Azure Data Factory pipeline failed on day 12 of the sprint due to a transient network timeout with NetSuite, highlighting a lack of robust retry logic. Emily Davis has logged this for immediate remediation in Sprint 7.
+
+7. Upcoming Sprint 7 Goals
+
+Complete the data backfilling and imputation for NetSuite lead times.
+
+Establish the secure SFTP connection with FastenCo and automate the nightly ingestion of their catalog.
+
+Train and backtest the first viable XGBoost forecasting model on the cleaned dataset.
+
+Implement the backend FastAPI endpoints for the manual PO approval queue.

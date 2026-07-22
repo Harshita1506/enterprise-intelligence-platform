@@ -1,6 +1,7 @@
+
+
 import type { Metadata } from "next"
 import Link from "next/link"
-import { notFound } from "next/navigation"
 import { 
   ArrowLeft, 
   FileText, 
@@ -11,6 +12,7 @@ import {
   CheckCircle2 
 } from "lucide-react"
 import { StatusBadge } from "@/components/workspace/status-badge"
+import { UploadDocument } from "@/components/projects/upload-document"
 import { get } from "@/lib/api"
 
 type Params = { params: Promise<{ id: string }> }
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     const project = response.data
 
     return {
-      title: `${project.project_name} — Projects`,
+      title: `${project.project_name || 'Project'} — Projects`,
     }
   } catch {
     return {
@@ -34,13 +36,36 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ProjectDetailPage({ params }: Params) {
   const { id } = await params
-  let project
+  let project = null
 
   try {
     const response = await get(`/api/projects/${id}`)
     project = response.data
-  } catch {
-    notFound()
+  } catch (error) {
+    console.error("Failed to fetch project:", error)
+  }
+
+  // STABLE FALLBACK: Prevents the 404 crash
+  if (!project) {
+    return (
+      <div className="space-y-6">
+        <Link
+          href="/portal/projects"
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back to Projects
+        </Link>
+
+        <div className="rounded-xl border border-border bg-card p-8">
+          <h1 className="text-xl font-semibold text-foreground">Project unavailable</h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The project could not be loaded. We tried looking for ID: <strong>{id}</strong>. 
+            Please verify that the backend is running and this project exists in your database.
+          </p>
+        </div>
+      </div>
+    )
   }
 
   // Map backend response to frontend requirements
@@ -124,6 +149,14 @@ export default async function ProjectDetailPage({ params }: Params) {
                 {project.chunks}
               </span>
             </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">
+                Status
+              </span>
+              <span className="text-lg font-semibold capitalize">
+                {project.status.replace("-", " ")}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -134,10 +167,13 @@ export default async function ProjectDetailPage({ params }: Params) {
             Executive Summary
           </div>
           <p className="mt-2 text-sm leading-relaxed text-foreground/90">
-            {project.lastSummary}
+            {project.lastSummary || "Summary unavailable."}
           </p>
         </div>
       </div>
+
+      {/* Upload Document Component */}
+      <UploadDocument projectId={project.project_id || id} />
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Project Risks */}
@@ -163,13 +199,13 @@ export default async function ProjectDetailPage({ params }: Params) {
                 {project.risks.map((risk: any, i: number) => (
                   <div key={i} className="rounded-xl border border-border bg-card/60 p-4 backdrop-blur">
                     <div className="flex items-start justify-between gap-3">
-                      <span className="text-sm font-medium text-foreground">{risk.risk || risk.title}</span>
+                      <span className="text-sm font-medium text-foreground">{risk.risk_title || risk.title}</span>
                       <span className="shrink-0 rounded-md border border-destructive/20 bg-destructive/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-destructive">
                         {risk.severity || 'High'}
                       </span>
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                      <span className="font-semibold text-foreground/80">Recommendation:</span> {risk.mitigation || risk.recommendation}
+                      <span className="font-semibold text-foreground/80">Recommendation:</span> {risk.recommendation || risk.mitigation}
                     </p>
                   </div>
                 ))}

@@ -8,7 +8,7 @@ export interface DashboardStats {
 export interface AttentionItem {
   project: string;
   title: string;
-  severity: string;
+  status: string;
 }
 
 export interface AIUpdate {

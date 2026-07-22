@@ -1,43 +1,66 @@
-PROJECT GAMMA REQUIREMENTS
+Project Name: Automated Inventory Intelligence (Project Sentinel)
+Document Version: 1.8.0
+Industry: Supply Chain / Manufacturing
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: August 14, 2025
 
-Project Name
+1. Project Objectives
+Project Sentinel aims to replace the manual, spreadsheet-driven inventory forecasting processes currently utilized across our three primary North American manufacturing facilities. By leveraging historical ERP data, real-time supplier telemetry, and machine learning models, Sentinel will predict raw material shortages before they occur and optimize safety stock levels. The primary business objectives are to reduce carrying costs of overstocked components by 22%, decrease production line halts due to stockouts of critical fasteners by 90%, and automate the generation of routine Purchase Orders (POs) for tier-2 and tier-3 suppliers.
 
-Healthcare Appointment Platform
+2. Scope
+The initial release (Phase 1) is restricted to direct raw materials (steel, aluminum, electronics, and mechanical fasteners) used in the heavy machinery division. It includes the ingestion of historical data from Oracle NetSuite, the development of predictive demand models, a web-based dashboard for procurement officers, and an automated PO recommendation engine. Indirect materials (office supplies, maintenance tooling) and autonomous PO execution (without human approval) are explicitly out of scope for Phase 1 and will be addressed in Phase 2.
 
-Client
+3. Functional Requirements
 
-CityCare Hospitals
+Data Ingestion & Processing: The system must establish a bidirectional sync with Oracle NetSuite to extract daily consumption rates, current on-hand inventory, and historical lead times.
 
-Objective
+Predictive Forecasting: The AI engine must generate a rolling 12-week demand forecast for all tier-1 and tier-2 SKUs, factoring in seasonality, historical production schedules, and macroeconomic lead-time indicators.
 
-Develop a cloud-based appointment booking platform.
+Automated Reordering: When projected inventory dips below the dynamically calculated safety stock threshold, the system must generate a Draft Purchase Order in NetSuite and alert the assigned procurement officer.
 
-Features
+Supplier Integration: The platform must poll APIs from our top 5 major suppliers (including FastenCo and GlobalSteel) to fetch real-time pricing and availability data before recommending a PO.
 
-Doctor Search
+4. Non-Functional Requirements
 
-Appointment Booking
+Model Accuracy: The forecasting model must achieve a Mean Absolute Percentage Error (MAPE) of less than 15% across high-volume SKUs during backtesting.
 
-Video Consultation
+Performance: The procurement dashboard must load the global inventory health matrix within 2 seconds for up to 50,000 SKUs.
 
-Prescription History
+Security: System access must be gated by Azure Active Directory (AAD) SSO. API integrations must utilize OAuth 2.0 with rotating client secrets.
 
-Admin Dashboard
+Reliability: The data ingestion pipeline must have automated retry mechanisms and dead-letter queues to handle transient ERP downtime.
 
-Technology
+5. Technical Stack
 
-React
+Cloud Infrastructure: Microsoft Azure (AKS, Azure Data Factory, Azure Key Vault).
 
-NodeJS
+Data & AI: Databricks (Apache Spark) for ETL, Python, PyTorch, and XGBoost for time-series forecasting.
 
-MongoDB
+Backend Application: Python, FastAPI, SQLAlchemy.
 
-AWS
+Database: Azure Database for PostgreSQL (Flexible Server), Redis for session caching.
 
-Timeline
+Frontend: Vue.js 3, Nuxt.js, TailwindCSS, Chart.js for data visualization.
 
-14 Weeks
+6. API Specifications (Key Endpoints)
 
-Budget
+GET /api/v1/forecast/{sku}: Returns the 12-week demand prediction array and confidence intervals.
 
-$180,000
+POST /api/v1/purchase-orders/recommend: Triggers the business logic to evaluate stock levels and push draft POs to the NetSuite RESTlet API.
+
+GET /api/v1/suppliers/availability: Aggregates real-time stock levels from external supplier APIs.
+
+7. Architecture
+Sentinel utilizes a data lakehouse architecture. Azure Data Factory extracts nightly batch data from Oracle NetSuite and loads it into Azure Data Lake Storage. Databricks processes this raw data, handles missing values, and trains the machine learning models. The inference engine runs as a containerized FastAPI microservice on Azure Kubernetes Service (AKS), serving predictions to the Vue.js frontend and triggering automated workflows via Azure Logic Apps.
+
+8. Milestones & Deadlines
+
+M1: Data Pipeline & Infrastructure Setup: Target September 30, 2025.
+
+M2: Baseline ML Model Training & Backtesting: Target November 15, 2025.
+
+M3: NetSuite PO Integration & Dashboard UI: Target January 20, 2026.
+
+M4: User Acceptance Testing (UAT): Target February 28, 2026.
+
+M5: Phase 1 Production Rollout: Target March 30, 2026.

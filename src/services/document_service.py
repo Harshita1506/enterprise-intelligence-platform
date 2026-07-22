@@ -14,11 +14,7 @@ class DocumentService:
         self.kb = EnterpriseKnowledgeBase()
 
     def get_document(self, document_id: str) -> DocumentResponse:
-        print("=" * 60)
-        print(type(self.kb))
-        print(hasattr(self.kb, "get_document"))
-        print(dir(self.kb))
-        print("=" * 60)
+        
 
         metadata = self.kb.get_document(document_id)
 

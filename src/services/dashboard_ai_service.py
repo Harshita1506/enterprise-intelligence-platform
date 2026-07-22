@@ -1,87 +1,76 @@
-from src.core.config import PROJECTS
+"""
+Provides dashboard-ready information derived from project metadata.
+
+No LLM calls are made from this service.
+"""
+
 from src.models.dashboard_models import AttentionItem, AIUpdate
-from src.services.intelligence_service import IntelligenceService
-from src.services.dashboard_cache import (
-    get_attention,
-    set_attention,
-    get_updates,
-    set_updates,
-)
+from src.services.project_metadata_service import ProjectMetadataService
+
 
 class DashboardAIService:
     """
-    Aggregates AI insights across all enterprise projects.
+    Provides dashboard information using project metadata only.
     """
 
     def __init__(self):
-        self.intelligence = IntelligenceService()
-
-    def _map_status_to_severity(self, status: str) -> str:
-        status = status.lower()
-
-        if status == "pending":
-            return "HIGH"
-
-        if status == "in progress":
-            return "MEDIUM"
-
-        if status == "completed":
-            return "LOW"
-
-        return "MEDIUM"
+        self.metadata = ProjectMetadataService()
 
     def get_attention_items(self):
-        cached = get_attention()
-
-        if cached is not None:
-            return cached
+        """
+        Returns knowledge base readiness for each project.
+        """
 
         items = []
+        projects = self.metadata.get_projects_metadata()
 
-        for project_id in PROJECTS.keys():
-            result = self.intelligence.action_items.extract_tasks(project_id)
+        for project in projects:
 
-            if not result["success"]:
-                continue
+            if project["status"] == "Inactive":
+                status = "Not Ready"
+                title = "Project folder not found."
 
-            collection = result["data"]
+            elif project["documents"] == 0:
+                status = "Not Ready"
+                title = "No documents have been indexed."
 
-            for task in collection.items:
-                items.append(
-                    AttentionItem(
-                        project=project_id,
-                        title=task.task,
-                        severity=self._map_status_to_severity(task.status),
-                    )
+            elif project["documents"] < 3:
+                status = "Needs More Data"
+                title = "Limited documentation available for AI analysis."
+
+            else:
+                status = "Ready"
+                title = "Knowledge base is ready for AI analysis."
+
+            items.append(
+                AttentionItem(
+                    project=project["project_name"],
+                    title=title,
+                    status=status,
                 )
-
-        set_attention(items)
+            )
 
         return items
 
     def get_ai_updates(self):
-        cached = get_updates()
-
-        if cached is not None:
-            return cached
+        """
+        Returns project overview cards for the dashboard.
+        """
 
         updates = []
+        projects = self.metadata.get_projects_metadata()
 
-        for project_id in PROJECTS.keys():
-            result = self.intelligence.summarizer.generate_summary(project_id)
-
-            if not result["success"]:
-                continue
-
-            summary = result["data"]
+        for project in projects:
 
             updates.append(
                 AIUpdate(
-                    project=project_id,
-                    summary=summary.executive_summary,
+                    project=project["project_name"],
+                    summary=(
+                        f'{project["status"]} • '
+                        f'{project["documents"]} documents indexed • '
+                        f'{project["chunks"]} knowledge chunks available'
+                    ),
                 )
             )
-
-        set_updates(updates)
 
         return updates

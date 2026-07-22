@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import { FolderKanban } from "lucide-react"
 
-import { ProjectsToolbar } from "@/components/projects/projects-toolbar"
 import { ProjectCard } from "@/components/projects/project-card"
 import { get } from "@/lib/api"
 
@@ -56,16 +55,23 @@ export default async function ProjectsPage() {
         </p>
       </div>
 
-      <ProjectsToolbar />
-
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {projects.map((project: any) => (
-          <ProjectCard
-            key={project.id}
-            project={project}
-          />
-        ))}
-      </div>
+      {projects.length > 0 ? (
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {projects.map((project: any) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-border bg-card/40 p-12 text-center">
+          <h2 className="text-lg font-semibold">No projects found</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Create your first project to get started.
+          </p>
+        </div>
+      )}
     </div>
   )
 }

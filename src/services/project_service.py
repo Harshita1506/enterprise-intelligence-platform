@@ -43,11 +43,7 @@ class ProjectService:
         projects = self.metadata_service.get_projects_metadata()
 
         project = next(
-            (
-                p
-                for p in projects
-                if p["project_id"] == project_id
-            ),
+            (p for p in projects if p["project_id"] == project_id),
             None,
         )
 
@@ -55,20 +51,14 @@ class ProjectService:
             raise ValueError("Project not found.")
 
         # ---------------- Summary ----------------
-
         summary_result = self.intelligence.summarizer.generate_summary(project_id)
-        
-        # DEBUG PRINTS
-        print("--- DEBUG SUMMARY RESULT ---")
-        print(summary_result)
-        if not summary_result.get("success"):
-            print("ERROR:", summary_result.get("error"))
-        print("----------------------------")
 
-        if summary_result["success"]:
+        if summary_result.get("success"):
             summary = summary_result["data"].executive_summary
         else:
             summary = "Summary unavailable."
+            
+        # ... remainder of the method remains identical ...
 
         # ---------------- Risks ----------------
 

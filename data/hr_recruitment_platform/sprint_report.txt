@@ -1,0 +1,63 @@
+Project: NextGen Talent Acquisition Platform (Project HireStream)
+Sprint Name: Sprint 12 - External APIs & Core AI
+Sprint Dates: April 5, 2026 – April 19, 2026
+Scrum Master: Sarah Johnson
+
+1. Sprint Executive Summary
+Sprint 12 yielded highly polarized results. The engineering team achieved massive success integrating the Checkr API and the DocuSign eSignature scaffolding, proving out our event-driven Kafka architecture. However, the AI resume parsing engine completely failed its internal legal and compliance review due to identified algorithmic biases regarding document formatting and inferred demographics. This required a major mid-sprint scope change to remove all automated rejection capabilities. Consequently, significant engineering effort is now being redirected toward re-tuning the AI pre-processing layer, causing several backend tickets to spill over.
+
+2. Sprint Metrics
+
+Committed Story Points: 105
+
+Completed Story Points: 68
+
+Spillover Points: 37
+
+Team Velocity: 88 (Rolling 3-sprint average)
+
+Code Coverage: 82.1% (Backend), 89.5% (Frontend)
+
+Open Bugs: 6 (2 Critical, 3 High, 1 Low)
+
+3. Completed Tasks & Achievements
+
+HR-401: Integrate Checkr API for initiating standard 7-year background checks upon candidate stage change. (13 points) - Completed
+
+HR-405: Develop Kafka consumer for listening to Checkr webhooks and updating PostgreSQL candidate status. (8 points) - Completed
+
+HR-411: Build Hiring Manager Kanban UI (Drag-and-drop candidates between stages) in React. (13 points) - Completed
+
+HR-415: Implement Microsoft Graph API OAuth 2.0 flow for calendar delegation. (8 points) - Completed
+
+Team Achievement: The backend team successfully load-tested the Go API gateway, achieving 5,000 requests per second with a p99 latency of just 45ms.
+
+4. Pending Work (Spillover to Sprint 13)
+
+HR-420: Finalize AI Resume Fit Score algorithm against Requisition requirements. (21 points) - Blocked/Refactoring due to bias findings
+
+HR-428: Sync Workday Cost Centers and Supervisory Organizations via API. (8 points) - Blocked by Workday throttling
+
+HR-432: Implement Auto-Reject candidate email triggers. (8 points) - Abandoned/Removed from Scope per Legal
+
+5. Current Blockers & Issues
+
+AI Compliance (Critical Blocker): The discovery that our PDF text extraction scrambles multi-column resumes, thereby artificially lowering the AI fit score for certain candidates, is a major issue. We are pivoting to an OCR-first approach, which is significantly more computationally expensive and requires architecture changes.
+
+Workday Throttling: Workday is rejecting our batch synchronization attempts. We must write a custom paginated polling mechanism with backoff logic to slowly sip data from their HRIS without triggering their WAF (Web Application Firewall).
+
+6. Technical Debt & Quality Notes
+
+Mocked Workday Data: To unblock the frontend team, we have hardcoded mock Workday organizational data into the staging environment. This technical debt must be resolved in Sprint 13, or we risk a catastrophic failure during end-to-end integration testing.
+
+Removing the auto-reject feature required surgically ripping out several Kafka event streams. The team needs to allocate time in Sprint 13 to clean up dead code and unused database columns.
+
+7. Upcoming Sprint 13 Goals
+
+Deploy OCR pre-processing for the AI Resume Parser to fix formatting biases.
+
+Implement exponential backoff for the Workday API sync to resolve throttling.
+
+Finalize DocuSign API template mapping for offer letters.
+
+Begin end-to-end UAT testing of the candidate application flow.

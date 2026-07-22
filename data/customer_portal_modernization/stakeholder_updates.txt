@@ -1,0 +1,50 @@
+Project: Customer Portal Modernization (Project Nova)
+Document Type: Weekly Executive Stakeholder Update
+Reporting Period: Week ending February 13, 2026
+Prepared By: Sarah Johnson (Lead Product Manager)
+To: Rohan Sharma (VP of E-Commerce), Executive Steering Committee
+
+1. Executive Summary & Current Health
+
+Overall Project Status: YELLOW (Caution)
+
+Budget Health: GREEN (On Track)
+
+Timeline Health: YELLOW (At Risk of 1-week slip)
+
+Scope: GREEN (Locked, custom MFA deferred)
+
+Project Nova continues to make strong progress on the frontend user experience, but we are currently facing backend integration bottlenecks. The budget remains solidly in the green, with only 45% of our vendor allocation utilized to date. However, the timeline is marked as Yellow due to significant delays regarding payment gateway testing and legacy system data synchronization. We have enacted mitigation strategies this week, but require executive support to unblock a vendor dependency.
+
+2. Major Achievements
+
+Frontend Ahead of Schedule: The React/Next.js frontend team has completed all UI components for the user profile, address book, and the new loyalty rewards dashboard. The UI is currently testing at a Lighthouse performance score of 98.
+
+SSO Integration Complete: The Auth0 Single Sign-On integration is fully operational on the staging environment.
+
+Scope Optimization: As discussed and approved by Rohan Sharma, we have successfully optimized our scope by deferring the custom-built MFA UI to Phase 2, saving approximately two weeks of frontend engineering effort.
+
+3. Key Blockers & Risks
+
+Stripe API Rate Limits (Critical Constraint): We are currently unable to complete end-to-end testing of the checkout flow. Our automated QA pipelines are generating tests that exceed the rate limit of our Stripe sandbox environment. The Stripe integration is stalled at 65% completion.
+
+SAP Staging Instability: A 48-hour unannounced outage of the internal SAP staging environment severely disrupted the backend team's ability to map order history data, resulting in story point spillover this sprint.
+
+Performance Threat: We identified that the legacy SAP system cannot meet our SLA of 200ms response times. We are architecting a Redis caching layer to bypass this limitation.
+
+4. Executive Recommendations & Escalations
+
+Vendor Escalation Required: I have requested a temporary quota increase from Stripe Enterprise Support. However, given our May Go-Live target, I recommend that Rohan Sharma leverage his executive relationship with our Stripe Account Director to expedite this sandbox limit increase. This is our primary critical path blocker.
+
+Internal IT SLA: We request leadership assistance in enforcing a strict 99% uptime SLA with the internal Enterprise IT team regarding the SAP staging environment. Unannounced weekend downtime is unacceptable during this critical phase of development.
+
+5. Upcoming Milestones (Next 14 Days)
+
+February 18: Finalize Redis caching architecture for the SAP order synchronization.
+
+February 20: Expected resolution of the Stripe sandbox rate limits; resumption of automated CI/CD pipeline tests.
+
+February 28: Milestone 3 Deadline - Full Stripe Integration & SAP Order Sync Complete. (Currently at risk, pending Stripe escalation).
+
+6. Client/Business Expectations
+We are confident that despite the current backend friction, the proposed caching strategies will ensure the portal handles the simulated Black Friday traffic loads. The business should expect a fully functional staging demo of the authenticated checkout and order history flow by the first week of March.

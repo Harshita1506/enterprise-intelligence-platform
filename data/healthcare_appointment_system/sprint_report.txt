@@ -1,0 +1,61 @@
+Project: Intelligent Patient Scheduling Platform (Project CareFlow)
+Sprint Name: Sprint 8 - EHR Write Integration & SMS Engine
+Sprint Dates: September 1, 2025 – September 15, 2025
+Scrum Master: Sarah Johnson
+
+1. Sprint Executive Summary
+Sprint 8 exposed a major architectural flaw in our vendor dependencies, forcing a mid-sprint pivot. The engineering team successfully completed the Twilio integration for the omnichannel reminder system and the frontend booking flow is functionally complete. However, load testing revealed that the legacy CareSync EHR cannot handle concurrent write operations (booking appointments), resulting in severe database locks and 500 errors. To mitigate this, we have introduced RabbitMQ into the architecture as an asynchronous buffer, which has generated unplanned technical debt and caused several backend tickets to spill over.
+
+2. Sprint Metrics
+
+Committed Story Points: 95
+
+Completed Story Points: 68
+
+Spillover Points: 27
+
+Team Velocity: 82 (Rolling 3-sprint average)
+
+Code Coverage: 86.4% (Backend), 91.2% (Frontend)
+
+Open Bugs: 5 (2 High, 3 Low)
+
+3. Completed Tasks & Achievements
+
+CF-305: Implement Twilio SMS and Voice API integration for 72-hour and 24-hour reminders. (13 points) - Completed
+
+CF-310: Build React components for the "Dynamic Waitlist Offer" patient UI. (8 points) - Completed
+
+CF-315: Ensure all Data in Transit to Mirth Connect is secured via mutual TLS (mTLS). (5 points) - Completed
+
+CF-319: Optimize Redis caching layer for provider availability queries, reducing response times to 300ms. (8 points) - Completed
+
+Team Achievement: The frontend QA team, led by Emily Davis, passed the internal WCAG 2.1 AA accessibility audit for the patient portal, ensuring compliance for visually impaired patients.
+
+4. Pending Work (Spillover to Sprint 9)
+
+CF-325: Finalize bidirectional sync: POST /api/v1/fhir/Appointment to CareSync EHR. (21 points) - Blocked / Refactoring to use RabbitMQ
+
+CF-330: E2E integration test: Patient books on web -> EHR updates -> Twilio sends confirmation. (8 points) - Blocked by CF-325
+
+5. Current Blockers & Issues
+
+CareSync API Unreliability (Critical): The on-premise CareSync database locks under moderate concurrency. This fundamentally breaks our synchronous booking requirement. We are actively mitigating this by engineering an asynchronous RabbitMQ queue, but this fundamentally changes the user experience (requiring "pending" states) and delays integration testing.
+
+Twilio Short Code Compliance: Carrier approval for our healthcare-specific short code is delayed by the telecommunications vendors. We are migrating to a 10DLC workaround for Phase 1.
+
+6. Technical Debt & Quality Notes
+
+RabbitMQ Implementation: Introducing a message broker mid-project adds operational complexity. We must ensure that dead-letter queues are properly monitored so that a failed appointment booking generates a PagerDuty alert to the clinical call center to manually intervene.
+
+Data Privacy: A high-priority security ticket (CF-345) has been created to ensure that all PHI temporarily held in the RabbitMQ broker is encrypted at the application layer, per the DPO's requirements.
+
+7. Upcoming Sprint 9 Goals
+
+Deploy the RabbitMQ cluster in AWS EKS.
+
+Refactor the booking API to use the asynchronous queue-worker pattern.
+
+Finalize 10DLC registration with Twilio to unblock SMS testing.
+
+Conduct end-to-end load testing on the new asynchronous pipeline

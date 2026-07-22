@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { FileText, ArrowRight } from "lucide-react";
+import { FolderOpen, ArrowRight } from "lucide-react";
 import type { AIUpdate } from "@/lib/dashboard-types";
 
 interface RecentIntelligenceProps {
@@ -15,7 +15,7 @@ export function RecentIntelligence({
         id="recent-intelligence-heading"
         className="text-sm font-semibold tracking-tight text-foreground"
       >
-        Recent AI Intelligence
+        Project Overview
       </h2>
 
       <div className="mt-4 grid gap-3 md:grid-cols-2">
@@ -36,16 +36,16 @@ export function RecentIntelligence({
             <div className="relative">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                  <FileText className="h-4 w-4" />
+                  <FolderOpen className="h-4 w-4" />
                 </span>
 
                 <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  {update.project}
+                  {update.project.replace(/_/g, " ")}
                 </span>
               </div>
 
               <h3 className="mt-4 text-lg font-semibold tracking-tight text-foreground">
-                AI Update
+                Knowledge Summary
               </h3>
 
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">

@@ -1,0 +1,54 @@
+Project: NextGen Talent Acquisition Platform (Project HireStream)
+Meeting Type: Sprint 12 AI Compliance & Integration Review
+Date: April 18, 2026
+Duration: 90 minutes
+Attendees: Sarah Johnson (Product Manager), Alex Kumar (Backend/AI Lead), Priya Patel (Frontend Lead), Emily Davis (VP of Legal & Compliance), Michael Chen (DevOps), Rohan Sharma (VP of Global Talent / Sponsor)
+
+1. Meeting Summary
+The core objective of this meeting was to review the preliminary results of the AI Resume Parsing engine and discuss the status of our third-party integrations (Checkr, DocuSign, Workday). While the Checkr integration is functioning flawlessly, the AI resume screening engine has triggered severe legal and compliance concerns. Emily Davis (Legal) flagged potential algorithmic bias in the AI scoring model based on internal beta testing. Additionally, Michael Chen reported ongoing friction with the legacy Workday API environments.
+
+2. Key Decisions Made
+
+AI Auto-Reject Deprecation: Emily Davis mandated that the platform cannot, under any circumstances, utilize AI to automatically reject candidates (change their status to "Declined"). Rohan Sharma approved the pivot: the AI will strictly function as an "Augmented Ranking" tool. Human recruiters must manually review all applicants and click the reject button.
+
+Feature Flagging Workday: Because the Workday staging environment is currently unstable and blocking frontend testing of the requisition approval flow, Sarah Johnson approved a decision to use mocked JSON responses for Workday data on the staging environment until Enterprise IT resolves the connection issues.
+
+DocuSign Template Standardization: Priya Patel noted that different departments have 40+ variations of offer letters. Rohan Sharma mandated that HR business partners must consolidate these into a maximum of 5 standard DocuSign templates to simplify the API payload structure.
+
+3. Discussion Details & Blockers
+
+Algorithmic Bias Identification: Alex Kumar presented the beta test results of the AI parsing engine. The system was found to be inadvertently penalizing candidates who utilized non-traditional resume formats (like multi-column Canva templates) because the text extraction layer scrambled the chronological order. More concerningly, the model showed a 12% lower average fit score for candidates who attended specific historically female colleges, despite explicit instructions to strip demographic identifiers.
+
+Workday API Throttling: Michael Chen explained that syncing our PostgreSQL database with Workday's cost-center hierarchy requires pulling 10,000+ records. Workday's SOAP API is aggressively throttling our GCP cloud functions, causing the sync to fail silently.
+
+Checkr Success: On a positive note, the Checkr API webhook integration for background checks was completed 4 days ahead of schedule and successfully processed 100 test candidate workflows without a single error.
+
+4. Action Items & Assigned Owners
+
+[Action Item]: Rewrite the AI text-extraction pre-processing pipeline to utilize OCR (Optical Character Recognition) for multi-column PDFs before passing the text to the LLM scoring model.
+
+Owner: Alex Kumar
+
+Due Date: April 26, 2026
+
+[Action Item]: Disable the "Auto-Reject Candidates Below Score X" toggle in the Hiring Manager UI and replace it with a simple sorting mechanism.
+
+Owner: Priya Patel
+
+Due Date: April 22, 2026
+
+[Action Item]: Engage an external algorithmic auditing firm to certify the AI model for EEOC compliance before Go-Live.
+
+Owner: Emily Davis
+
+Due Date: May 10, 2026
+
+[Action Item]: Refactor the Workday sync job to use paginated REST API calls with exponential backoff instead of bulk SOAP requests.
+
+Owner: Michael Chen
+
+Due Date: April 24, 2026
+
+5. Pending Approvals
+
+Awaiting budget approval from Rohan Sharma for the external AI compliance audit ($25,000 estimated cost).

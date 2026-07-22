@@ -1,27 +1,138 @@
-PROJECT GAMMA
+Inventory Management AI
+requirements.txt
+Project Name: Automated Inventory Intelligence (Project Sentinel)
+Document Version: 1.8.0
+Industry: Supply Chain / Manufacturing
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: August 14, 2025
 
-Weekly Meeting
+1. Project Objectives
+Project Sentinel aims to replace the manual, spreadsheet-driven inventory forecasting processes currently utilized across our three primary North American manufacturing facilities. By leveraging historical ERP data, real-time supplier telemetry, and machine learning models, Sentinel will predict raw material shortages before they occur and optimize safety stock levels. The primary business objectives are to reduce carrying costs of overstocked components by 22%, decrease production line halts due to stockouts of critical fasteners by 90%, and automate the generation of routine Purchase Orders (POs) for tier-2 and tier-3 suppliers.
 
-Date
+2. Scope
+The initial release (Phase 1) is restricted to direct raw materials (steel, aluminum, electronics, and mechanical fasteners) used in the heavy machinery division. It includes the ingestion of historical data from Oracle NetSuite, the development of predictive demand models, a web-based dashboard for procurement officers, and an automated PO recommendation engine. Indirect materials (office supplies, maintenance tooling) and autonomous PO execution (without human approval) are explicitly out of scope for Phase 1 and will be addressed in Phase 2.
 
-14 July 2026
+3. Functional Requirements
 
-Discussion
+Data Ingestion & Processing: The system must establish a bidirectional sync with Oracle NetSuite to extract daily consumption rates, current on-hand inventory, and historical lead times.
 
-Appointment booking module completed.
+Predictive Forecasting: The AI engine must generate a rolling 12-week demand forecast for all tier-1 and tier-2 SKUs, factoring in seasonality, historical production schedules, and macroeconomic lead-time indicators.
 
-Video consultation APIs integrated.
+Automated Reordering: When projected inventory dips below the dynamically calculated safety stock threshold, the system must generate a Draft Purchase Order in NetSuite and alert the assigned procurement officer.
 
-Payment module pending.
+Supplier Integration: The platform must poll APIs from our top 5 major suppliers (including FastenCo and GlobalSteel) to fetch real-time pricing and availability data before recommending a PO.
 
-Hospital requested multilingual support.
+4. Non-Functional Requirements
 
-Doctors requested calendar synchronization.
+Model Accuracy: The forecasting model must achieve a Mean Absolute Percentage Error (MAPE) of less than 15% across high-volume SKUs during backtesting.
 
-Action Items
+Performance: The procurement dashboard must load the global inventory health matrix within 2 seconds for up to 50,000 SKUs.
 
-Complete payment integration.
+Security: System access must be gated by Azure Active Directory (AAD) SSO. API integrations must utilize OAuth 2.0 with rotating client secrets.
 
-Research Google Calendar APIs.
+Reliability: The data ingestion pipeline must have automated retry mechanisms and dead-letter queues to handle transient ERP downtime.
 
-Finalize prescription module.
+5. Technical Stack
+
+Cloud Infrastructure: Microsoft Azure (AKS, Azure Data Factory, Azure Key Vault).
+
+Data & AI: Databricks (Apache Spark) for ETL, Python, PyTorch, and XGBoost for time-series forecasting.
+
+Backend Application: Python, FastAPI, SQLAlchemy.
+
+Database: Azure Database for PostgreSQL (Flexible Server), Redis for session caching.
+
+Frontend: Vue.js 3, Nuxt.js, TailwindCSS, Chart.js for data visualization.
+
+6. API Specifications (Key Endpoints)
+
+GET /api/v1/forecast/{sku}: Returns the 12-week demand prediction array and confidence intervals.
+
+POST /api/v1/purchase-orders/recommend: Triggers the business logic to evaluate stock levels and push draft POs to the NetSuite RESTlet API.
+
+GET /api/v1/suppliers/availability: Aggregates real-time stock levels from external supplier APIs.
+
+7. Architecture
+Sentinel utilizes a data lakehouse architecture. Azure Data Factory extracts nightly batch data from Oracle NetSuite and loads it into Azure Data Lake Storage. Databricks processes this raw data, handles missing values, and trains the machine learning models. The inference engine runs as a containerized FastAPI microservice on Azure Kubernetes Service (AKS), serving predictions to the Vue.js frontend and triggering automated workflows via Azure Logic Apps.
+
+8. Milestones & Deadlines
+
+M1: Data Pipeline & Infrastructure Setup: Target September 30, 2025.
+
+M2: Baseline ML Model Training & Backtesting: Target November 15, 2025.
+
+M3: NetSuite PO Integration & Dashboard UI: Target January 20, 2026.
+
+M4: User Acceptance Testing (UAT): Target February 28, 2026.
+
+M5: Phase 1 Production Rollout: Target March 30, 2026.
+
+9. Success Metrics
+
+Model MAPE < 15% on validation datasets.
+
+Reduction of manual PO generation time by 60%.
+
+Zero missed API polling events for the top 5 suppliers over a 30-day period.
+
+10. Constraints & Assumptions
+
+We assume that Oracle NetSuite can support the necessary API throughput for bulk SKU updates without throttling.
+
+The project assumes that historical data from 2020-2022 is highly anomalous due to pandemic supply chain shocks and must be heavily weighted or excluded by the data science team.
+
+meeting_notes.txt
+Project: Automated Inventory Intelligence (Project Sentinel)
+Meeting Type: Sprint 6 Architectural Alignment & Risk Review
+Date: October 28, 2025
+Duration: 90 minutes
+Attendees: Sarah Johnson (Product Manager), Priya Patel (Lead Data Scientist), Alex Kumar (Backend Architect), Emily Davis (QA Lead), Michael Chen (VP of Global Supply Chain / Sponsor)
+
+1. Meeting Summary
+The objective of this meeting was to review the initial output of the machine learning forecasting models and discuss integration challenges with third-party suppliers. While the infrastructure provisioning on Azure is complete, the data science team has flagged severe data quality issues originating from the legacy ERP. Furthermore, the backend team has discovered that a critical supplier's API does not support the real-time requirements outlined in the project scope.
+
+2. Key Decisions Made
+
+Human-in-the-Loop Fallback: Due to the erratic nature of the historical data and supplier API limitations, Michael Chen decided that Sentinel will NOT execute any autonomous POs in Phase 1. All system-generated POs must be routed to a procurement officer's dashboard for a manual "One-Click Approve" workflow. This modifies the original scope but ensures production lines are not halted by rogue algorithms.
+
+Pandemic Data Exclusion: Priya Patel presented analysis showing that lead times between March 2020 and December 2021 are severely skewing the XGBoost model predictions. It was officially decided to truncate the training dataset to only include data from January 2022 onwards, supplemented by synthetic data for extreme edge cases.
+
+Batch vs. Real-time Polling: Alex Kumar confirmed that FastenCo (our largest mechanical fastener supplier) cannot support real-time API polling. We will implement a nightly batch SFTP file drop from FastenCo instead, and cache their inventory locally in PostgreSQL.
+
+3. Discussion Details & Blockers
+
+NetSuite Data Quality Issue: Priya Patel highlighted that over 35% of historical Purchase Orders in Oracle NetSuite have null values for "Actual Delivery Date." Without this field, the ML model cannot accurately calculate historical supplier lead times, which is a critical feature for predicting stockouts. The data engineering team is struggling to impute these missing values reliably.
+
+FastenCo API Deficiencies: Alex Kumar reported that FastenCo's B2B API is heavily rate-limited and lacks a bulk-query endpoint for availability. Polling their API for 12,000 SKUs individually takes over 4 hours and frequently times out.
+
+Dashboard Velocity: On a positive note, the frontend development using Vue.js is progressing smoothly. Emily Davis noted that QA has already signed off on the UI component library and accessibility requirements.
+
+4. Action Items & Assigned Owners
+
+[Action Item]: Write an automated Databricks script to cross-reference NetSuite POs with warehouse receiving logs to backfill missing "Actual Delivery Date" fields.
+
+Owner: Priya Patel
+
+Due Date: Nov 3, 2025
+
+[Action Item]: Coordinate with FastenCo's IT department to establish a secure SFTP connection for a nightly bulk CSV export of their inventory catalog.
+
+Owner: Alex Kumar
+
+Due Date: Oct 31, 2025
+
+[Action Item]: Update the requirements document and the JIRA backlog to reflect the pivot from fully autonomous PO execution to the "One-Click Approve" dashboard workflow.
+
+Owner: Sarah Johnson
+
+Due Date: Oct 29, 2025
+
+[Action Item]: Develop a QA test plan specifically focused on the UI responsiveness of the manual PO approval queue under heavy load.
+
+Owner: Emily Davis
+
+Due Date: Nov 5, 2025
+
+5. Pending Approvals
+
+Awaiting security team sign-off on the architectural diagram for the FastenCo SFTP firewall exception.

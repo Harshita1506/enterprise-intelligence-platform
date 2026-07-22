@@ -1,0 +1,54 @@
+Project: Global Factory Command Center (Project Forge)
+Meeting Type: Sprint 9 OT/IT Integration Troubleshooting
+Date: March 05, 2026
+Duration: 60 minutes
+Attendees: Sarah Johnson (Product Manager), Michael Chen (Lead OT/IoT Engineer), Priya Patel (Data Engineering Lead), Alex Kumar (Frontend Lead), Emily Davis (QA/Security), Rohan Sharma (VP of Manufacturing)
+
+1. Meeting Summary
+The purpose of this meeting was to address critical data ingestion failures occurring during the integration of the Ohio manufacturing plant (Milestone 3). While the Texas plant integration (which features modern equipment) was highly successful, attempting to stream high-frequency vibration data directly from the legacy Siemens PLCs in Ohio to the AWS cloud has resulted in severe network congestion, packet loss, and latency spiking to over 4 seconds, directly violating our <200ms non-functional requirement.
+
+2. Key Decisions Made
+
+Pivot to Heavy Edge Computing: Michael Chen proposed that we cannot send raw, 1000Hz vibration data over the Ohio plant's aging WAN connection. Rohan Sharma approved a major architectural shift: we will deploy heavy industrial edge servers running AWS IoT Greengrass directly on the Ohio factory floor. These edge servers will perform the Fast Fourier Transform (FFT) on the vibration data locally, and only send the aggregated anomaly scores to the cloud.
+
+Relaxing Ohio Timeline: Acknowledging the hardware procurement constraints for the edge servers, Sarah Johnson agreed to decouple the Ohio plant's Go-Live from the Munich plant. Munich will proceed on schedule, while Ohio is delayed pending hardware delivery.
+
+Security Exception Denied: Michael Chen requested a temporary firewall exception to allow SSH access directly from the IT network to the Ohio PLCs for remote debugging. Emily Davis (Security) strictly vetoed this, citing the risk of ransomware bridging the IT/OT airgap. Engineers must physically travel to Ohio or use the approved bastion host.
+
+3. Discussion Details & Blockers
+
+Kafka Broker Flooding: Priya Patel shared Grafana metrics indicating that the raw data from just 15 machines in Ohio was flooding the Amazon MSK cluster, causing the broker's CPU to peg at 100%. The volume of noisy, unstructured data is overwhelming the Python consumers.
+
+Frontend Dashboard Performance: Alex Kumar reported that the React UI is functioning perfectly. The dashboard renders the live Texas plant data effortlessly, proving that the TimescaleDB architecture holds up when the data is clean and properly aggregated.
+
+Hardware Procurement Delay: The required industrial edge servers (Dell Edge Gateways) have a current supply chain lead time of 4 weeks, creating a hard blocker for the Ohio plant integration.
+
+4. Action Items & Assigned Owners
+
+[Action Item]: Initiate an emergency procurement request for 3 Dell Edge Gateway servers for the Ohio facility. Request expedited overnight shipping if possible.
+
+Owner: Michael Chen
+
+Due Date: March 06, 2026
+
+[Action Item]: Write the AWS Greengrass local Lambda function to perform the FFT vibration analysis at the edge instead of in the cloud.
+
+Owner: Priya Patel
+
+Due Date: March 15, 2026
+
+[Action Item]: Update the project MSK (Kafka) topic retention policies to drop corrupted/delayed packets from Ohio to prevent further broker crashes.
+
+Owner: Priya Patel
+
+Due Date: March 07, 2026
+
+[Action Item]: Book travel to the Ohio facility for next week to manually configure the Kepware server via the local bastion host.
+
+Owner: Michael Chen
+
+Due Date: March 08, 2026
+
+5. Pending Approvals
+
+Emergency capital expenditure ($45,000) for the edge computing hardware, pending Rohan Sharma's signature.

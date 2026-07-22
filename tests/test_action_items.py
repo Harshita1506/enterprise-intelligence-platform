@@ -21,7 +21,7 @@ def run_action_items_test():
 
     try:
         # Extract tasks from the customer_portal project
-        result = extractor.extract_tasks("customer_portal")
+        result = extractor.extract_tasks("smart_manufacturing_dashboard")
         
         if result["success"]:
             collection = result["data"]

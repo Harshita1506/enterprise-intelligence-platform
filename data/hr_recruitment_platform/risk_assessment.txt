@@ -1,0 +1,87 @@
+Project: NextGen Talent Acquisition Platform (Project HireStream)
+Document Type: Risk Register & Assessment
+Last Updated: April 20, 2026
+
+1. RSK-01: Algorithmic Bias and EEOC Non-Compliance
+
+Title: AI Resume Parser Exhibiting Unintended Bias
+
+Description: Beta testing revealed the AI scoring model inadvertently penalizes non-traditional resume formats and showed subtle bias against certain educational institutions. If deployed to production, this exposes the company to severe EEOC (Equal Employment Opportunity Commission) lawsuits, brand damage, and massive financial penalties.
+
+Probability: High (Risk materialized during testing)
+
+Impact: Critical (Legal liability and project shutdown)
+
+Mitigation Strategy: 1) Permanently disable all "Auto-Reject" capabilities; the AI will only provide a sorting score for human recruiters. 2) Replace standard text extraction with OCR to preserve document structure. 3) Hire an external algorithmic auditing firm to certify the model before Go-Live.
+
+Owner: Emily Davis (Legal) / Alex Kumar (AI Lead)
+
+Current Status: MITIGATION IN PROGRESS (Scope adjusted, technical refactoring underway).
+
+Dependencies: Successful engagement of a third-party auditing vendor.
+
+2. RSK-02: Workday Integration Failures
+
+Title: Workday API Throttling Preventing Master Data Sync
+
+Description: The Workday Core HRIS API aggressively throttles our data requests, preventing the synchronization of cost centers, departments, and supervisory organizations. Without this data, hiring managers cannot route requisitions for financial approval, rendering the system unusable.
+
+Probability: High (80%)
+
+Impact: Critical (Blocks core requisition functionality)
+
+Mitigation Strategy: Redesign the data synchronization architecture. Move away from nightly bulk SOAP requests to event-driven REST API webhooks for delta updates, combined with a highly throttled, paginated polling mechanism for initial data seeding.
+
+Owner: Michael Chen (DevOps)
+
+Current Status: OPEN (Refactoring scheduled for Sprint 13).
+
+Dependencies: Workday Enterprise Support response times.
+
+3. RSK-03: Microsoft Graph API Rate Limiting
+
+Title: Calendar Throttling during Bulk Interview Scheduling
+
+Description: The system allows candidates to self-schedule by reading the Outlook calendars of a 4-person interview panel. If hundreds of candidates attempt to view availability simultaneously, Microsoft Graph API rate limits could be exceeded, resulting in scheduling failures.
+
+Probability: Medium (45%)
+
+Impact: Medium (Degrades candidate experience)
+
+Mitigation Strategy: Implement Redis caching for interviewer availability. Instead of querying MS Graph on every page load, cache the availability for 5 minutes and only call the API to execute the actual calendar hold.
+
+Owner: Priya Patel (Frontend Lead)
+
+Current Status: MITIGATION IN PROGRESS (Redis caching implementation underway).
+
+4. RSK-04: Project KPI Attrition
+
+Title: Failure to Meet "Time-to-Fill" ROI Goals
+
+Description: Because Legal mandated the removal of the AI Auto-Reject feature, human recruiters must manually review every single application. This severely diminishes the time-saving benefits outlined in the original project business case, putting our ROI metrics at risk.
+
+Probability: Very High (90%)
+
+Impact: Medium (Business impact, does not stop technical deployment)
+
+Mitigation Strategy: Optimize the UI to allow recruiters to bulk-reject candidates efficiently based on the AI sorting score. Reset executive expectations regarding the 30% time-to-hire reduction KPI.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: OPEN
+
+5. RSK-05: GDPR Data Retention Violations
+
+Title: Failure to Purge Candidate Data
+
+Description: The system ingests PII (Personally Identifiable Information) via resumes and background checks. Failure to automatically anonymize or delete this data after the legally mandated period could result in GDPR/CCPA fines.
+
+Probability: Low (15%)
+
+Impact: High (Regulatory fines)
+
+Mitigation Strategy: Implement strict database-level CRON jobs that run nightly to irreversibly hash PII for any candidate record older than 12 months with no activity.
+
+Owner: Alex Kumar (Backend Lead)
+
+Current Status: MONITORING

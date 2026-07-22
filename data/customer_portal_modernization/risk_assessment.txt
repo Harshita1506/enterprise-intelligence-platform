@@ -1,0 +1,93 @@
+Project: Customer Portal Modernization (Project Nova)
+Document Type: Risk Register & Assessment
+Last Updated: February 13, 2026
+
+1. RSK-01: Stripe API Rate Limit Bottleneck
+
+Title: Stripe API Rate Limits blocking CI/CD and Load Testing
+
+Description: The backend development team is hitting rate limits on the Stripe sandbox environment during automated testing. If unresolved, we cannot accurately perform peak-load testing (simulating Black Friday traffic), risking a catastrophic failure of the payment gateway during production launch.
+
+Probability: High (80%)
+
+Impact: Critical (Stops deployment sign-off)
+
+Mitigation Strategy: 1) Escalate to the Stripe Enterprise Account Manager to request a sandbox quota increase. 2) Implement robust mocking in the QA automation scripts to bypass actual API calls during standard CI/CD runs, reserving live sandbox calls for dedicated load-testing windows.
+
+Owner: Priya Patel (Backend Lead) / Sarah Johnson (Escalation)
+
+Current Status: OPEN (Actively blocking E2E tests)
+
+Dependencies: Vendor support response SLA.
+
+2. RSK-02: SAP Legacy System API Latency
+
+Title: SAP ERP API Latency and Throttle Limits
+
+Description: The legacy SAP ERP system has a hard limit of 50 API requests per second and frequently takes over 800ms to respond. This directly contradicts our non-functional requirement of <200ms API response times and threatens to crash the backend during traffic surges.
+
+Probability: Very High (95%)
+
+Impact: High (Major impact on performance and user experience)
+
+Mitigation Strategy: Implement an aggressive Amazon ElastiCache (Redis) layer to cache user order histories for 24 hours. Decouple live status updates using an asynchronous webhook pattern rather than synchronous polling.
+
+Owner: Michael Chen (DevOps)
+
+Current Status: MITIGATION IN PROGRESS (Redis architecture approved in Sprint 14, development scheduled for Sprint 15).
+
+Dependencies: Successful mapping of SAP XML to GraphQL schema.
+
+3. RSK-03: Security Audit and PCI-DSS Certification
+
+Title: Delay in final PCI-DSS Compliance Certification
+
+Description: The modernization involves changing how we tokenize credit cards. If the external security firm finds a P1 vulnerability during the April penetration testing, the required remediation could push our May 5th Go-Live date.
+
+Probability: Low (15%)
+
+Impact: Critical (Stops Go-Live)
+
+Mitigation Strategy: Utilize Stripe Elements strictly for client-side tokenization so our servers never touch raw PAN data. Conduct an internal peer-review security audit in mid-March before the external vendor engagement.
+
+Owner: Alex Kumar (Frontend Lead)
+
+Current Status: MONITORING
+
+Dependencies: Completion of the Stripe backend integration.
+
+4. RSK-04: SAP Staging Environment Instability
+
+Title: Unpredictable Downtime of Enterprise IT Staging Environments
+
+Description: The 48-hour unannounced downtime of the SAP staging environment severely delayed QA and backend synchronization tasks. Further outages will compromise the project timeline.
+
+Probability: Medium (50%)
+
+Impact: Medium (Reduces sprint velocity and delays testing)
+
+Mitigation Strategy: Establish a formal SLA with the internal Enterprise IT infrastructure team. Create mocked JSON responses for all SAP endpoints so developers can continue working offline during outages.
+
+Owner: Emily Davis (QA Lead)
+
+Current Status: OPEN
+
+Dependencies: Internal IT department resource availability.
+
+5. RSK-05: Scope Creep via Custom MFA Requirements
+
+Title: UI/UX Complexity of Custom Multi-Factor Authentication
+
+Description: Initial designs called for a fully branded, custom-built MFA flow within the React app. The complexity of handling all edge cases (lost devices, backup codes) threatens to derail the frontend timeline.
+
+Probability: Low (Risk materialized and was handled)
+
+Impact: Medium
+
+Mitigation Strategy: Defer custom MFA screens to Phase 2. Utilize Auth0's Universal Login for all authentication flows in Phase 1.
+
+Owner: Sarah Johnson (Product)
+
+Current Status: CLOSED (Decision made in Sprint 14 client meeting).
+
+Dependencies: None.

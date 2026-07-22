@@ -1,0 +1,70 @@
+Project Name: Global Factory Command Center (Project Forge)
+Document Version: 1.5.2
+Industry: Industrial IoT / Manufacturing
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: November 12, 2025
+
+1. Project Objectives
+Project Forge is a critical Industry 4.0 initiative designed to bridge the gap between our Operational Technology (OT) on the factory floor and our corporate Information Technology (IT) networks. Currently, our plant managers in Ohio, Texas, and Germany rely on siloed, machine-specific SCADA screens and end-of-shift manual reporting to calculate Overall Equipment Effectiveness (OEE). This lack of real-time visibility costs an estimated $4.2M annually in unplanned downtime. Project Forge will ingest real-time telemetry from production machinery into a centralized cloud platform to provide live OEE dashboards, automated anomaly detection, and predictive maintenance alerts for critical CNC spindle wear and injection molder pressure drops. The objective is to increase global OEE by 8% and reduce unplanned downtime by 15%.
+
+2. Scope
+Phase 1 covers the integration of 150 Tier-1 production assets across three global facilities (Ohio, Texas, Munich). The scope includes data ingestion from legacy Siemens S7 and Allen-Bradley PLCs (Programmable Logic Controllers), real-time stream processing, time-series data storage, and the deployment of a React/Grafana web dashboard for plant managers and corporate executives. Phase 2 (closed-loop automated machine adjustment) is out of scope.
+
+3. Functional Requirements
+
+Data Ingestion: The platform must ingest high-frequency telemetry (temperature, vibration, pressure, cycle time) from PLCs using the MQTT protocol.
+
+Real-Time OEE Calculation: The system must dynamically calculate the Availability, Performance, and Quality metrics for each machine, rolling up to line, plant, and global levels.
+
+Predictive Alerts: A machine learning model must analyze vibration frequencies to predict CNC spindle failure at least 48 hours in advance, triggering an automatic work order in Maximo.
+
+Historical Analysis: Users must be able to query up to 3 years of historical sensor data with sub-second response times for root-cause analysis of quality defects.
+
+4. Non-Functional Requirements
+
+Throughput & Latency: The ingestion pipeline must handle up to 100,000 data points per second globally. The dashboard must reflect machine state changes (e.g., "Running" to "Fault") with a latency of less than 200 milliseconds.
+
+Security (OT/IT Airgap): To protect critical manufacturing infrastructure from ransomware, there must be no direct inbound connections from the IT network to the OT network. All data must be pushed outbound via a secure DMZ proxy.
+
+High Availability: The dashboard and alerting engine require 99.9% uptime. If cloud connectivity drops, local factory operations must not be impacted.
+
+5. Technical Stack
+
+Edge Layer: Kepware Server EX for industrial protocol translation, AWS IoT Greengrass for edge aggregation.
+
+Data Ingestion & Streaming: AWS IoT Core, Amazon MSK (Managed Streaming for Apache Kafka).
+
+Database: TimescaleDB (PostgreSQL extension) for high-ingest time-series data.
+
+Backend: Python (FastAPI) microservices, PyTorch for predictive maintenance models.
+
+Frontend: React 18 frontend embedding customized Grafana dashboards.
+
+6. API Specifications (Key Endpoints)
+
+POST /api/v1/telemetry/ingest: Internal endpoint for the Kafka consumer to write batch arrays of sensor data to TimescaleDB.
+
+GET /api/v1/oee/plant/{plant_id}: Retrieves live OEE metrics and historical trends for the dashboard.
+
+GET /api/v1/assets/{asset_id}/anomalies: Fetches the predictive health score and active ML alerts for a specific machine.
+
+7. Architecture
+Sensors hardwired to PLCs communicate via OPC-UA to a local Kepware server on the factory floor. Kepware translates this to MQTT and pushes it to AWS IoT Greengrass edge gateways. These edge devices buffer and filter the data before transmitting it over a Site-to-Site VPN to AWS IoT Core. Rules in IoT Core route raw data into MSK (Kafka) topics. Python worker nodes consume from Kafka, calculate real-time OEE, and persist the metrics into TimescaleDB, which serves the Grafana/React frontend.
+
+8. Milestones & Deadlines
+
+M1: Texas Plant Baseline Integration: Target January 15, 2026.
+
+M2: Time-Series DB & Kafka Pipeline Complete: Target February 10, 2026.
+
+M3: Ohio & Munich Legacy Integration: Target March 20, 2026.
+
+M4: ML Predictive Model Deployment: Target April 25, 2026.
+
+M5: Global Executive Rollout: Target May 15, 2026.
+
+9. Success Metrics
+
+Platform successfully handles 100k messages/sec without dropping packets.
+
+Spindle failure prediction model achieves a true positive rate of >85%.

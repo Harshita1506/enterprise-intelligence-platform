@@ -64,6 +64,8 @@ class ProjectIntelligenceAgent:
                 logger.info("Executing tool '%s' for project '%s'", state.decision.selected_tool.value, state.project_id)
                 state.tool_output = tool_func.invoke({"project_id": state.project_id})
             except Exception as e:
+                import traceback
+                traceback.print_exc()
                 logger.error("Tool execution failed: %s", e)
                 state.tool_output = {"success": False, "error": str(e)}
                 state.status = AgentStatus.FAILED
@@ -73,21 +75,35 @@ class ProjectIntelligenceAgent:
 
     def _synthesize(self, state: AgentState) -> AgentState:
         """Node 3: Final Answer Synthesis"""
+        import time
+        import json
+        
         start = time.time()
         state.node_history.append("Synthesis")
         state.status = AgentStatus.SYNTHESIZING
         
-        if not state.decision.requires_tool_execution:
-            prompt = GENERAL_CHAT_PROMPT.format_messages(query=state.query)
-        else:
-            tool_output_str = json.dumps(state.tool_output, indent=2) if state.tool_output else "{}"
-            prompt = AGENT_SYNTHESIS_PROMPT.format_messages(query=state.query, tool_output=tool_output_str)
+        try:
+            if not state.decision.requires_tool_execution:
+                prompt = GENERAL_CHAT_PROMPT.format_messages(query=state.query)
+            else:
+                tool_output_str = json.dumps(state.tool_output, indent=2) if state.tool_output else "{}"
+                prompt = AGENT_SYNTHESIS_PROMPT.format_messages(query=state.query, tool_output=tool_output_str)
+                
+            response = self.agent_llm.invoke(prompt)
+            state.final_response = response.content
             
-        response = self.agent_llm.invoke(prompt)
-        state.final_response = response.content
-        
-        if state.status != AgentStatus.FAILED:
-            state.status = AgentStatus.COMPLETED
+            if state.status != AgentStatus.FAILED:
+                state.status = AgentStatus.COMPLETED
+                
+        except Exception as e:
+            logger.error("Synthesis failed: %s", e)
+            
+            # Graceful enterprise degradation
+            state.final_response = (
+                "The AI service is temporarily unavailable due to provider capacity limits. "
+                "Your enterprise knowledge base remains available. Please try again in a few moments."
+            )
+            state.status = AgentStatus.FAILED
             
         state.telemetry.synthesis_latency_sec = round(time.time() - start, 2)
         return state
@@ -112,6 +128,7 @@ class ProjectIntelligenceAgent:
 
     def run(self, query: str) -> AgentResponse:
         """Main Orchestrator Loop"""
+        import time
         start_total = time.time()
         logger.info("Agent received query: '%s'", query)
         

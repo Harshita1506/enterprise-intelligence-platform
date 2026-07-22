@@ -1,25 +1,91 @@
-RISK REPORT
+Project: Automated Inventory Intelligence (Project Sentinel)
+Document Type: Risk Register & Assessment
+Last Updated: October 30, 2025
 
-High Risk
+1. RSK-01: Legacy ERP Historical Data Quality
 
-Patient data security compliance.
+Title: Incomplete NetSuite Lead Time Data Corrupting ML Models
 
-Medium Risk
+Description: Over a third of historical Purchase Orders in our Oracle NetSuite ERP lack actual receiving dates. The machine learning model relies heavily on historical supplier lead times to predict when a PO should be generated to avoid a stockout. Without accurate lead times, the model's confidence intervals widen dramatically, rendering the recommendations useless.
 
-Calendar synchronization complexity.
+Probability: Very High (100% - Currently Occurring)
 
-Medium Risk
+Impact: Critical (Directly prevents meeting the <15% MAPE accuracy requirement)
 
-Payment gateway certification pending.
+Mitigation Strategy: 1) Halt standard model training. 2) Deploy data engineers to build a temporary ETL pipeline that cross-references NetSuite PO numbers with raw warehouse dock-receipt logs to algorithmically reconstruct the missing delivery dates. 3) Discard records that cannot be reconstructed with 99% certainty.
 
-Low Risk
+Owner: Priya Patel (Lead Data Scientist)
 
-UI redesign requested.
+Current Status: OPEN (Mitigation scripting in progress during Sprint 7).
 
-Recommendations
+Dependencies: Access to legacy warehouse dock-receipt databases.
 
-Conduct security audit.
+2. RSK-02: Supplier Technological Maturity Constraints
 
-Begin compliance testing.
+Title: FastenCo Inability to Support Real-Time APIs
 
-Schedule API certification.
+Description: FastenCo, our largest supplier of mechanical fasteners, possesses a B2B API that is severely rate-limited and lacks bulk querying capabilities. Attempting to fetch real-time availability for our components times out, creating a massive blind spot for the automated PO generator.
+
+Probability: Very High (100% - Confirmed)
+
+Impact: High (Forces architectural redesign and creates up to a 24-hour lag in inventory visibility)
+
+Mitigation Strategy: Pivot the integration architecture. Abandon the REST API approach for FastenCo and revert to a legacy nightly SFTP batch CSV export. Cache this inventory data in our local Azure PostgreSQL database and update it once every 24 hours.
+
+Owner: Alex Kumar (Backend Architect)
+
+Current Status: MITIGATION IN PROGRESS (Architecture updated, awaiting SFTP credentials from vendor).
+
+Dependencies: FastenCo IT department responsiveness.
+
+3. RSK-03: Business Trust in Autonomous Operations
+
+Title: Operational Resistance to Automated PO Execution
+
+Description: Given the discovery of dirty historical data and the lag in supplier inventory updates, business stakeholders (specifically plant managers) are highly skeptical of allowing an AI to autonomously spend company capital on purchase orders without human oversight.
+
+Probability: High (80%)
+
+Impact: Medium (Requires UI/UX changes and scope adjustment)
+
+Mitigation Strategy: Modify Phase 1 scope. Downgrade the system from "Autonomous Execution" to "Human-in-the-Loop Recommendation." Build a "Draft PO" dashboard where procurement officers review the AI's logic and click to approve or reject the order.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: CLOSED (Scope officially modified and approved by VP of Supply Chain).
+
+Dependencies: None.
+
+4. RSK-04: Azure Cost Overruns via Databricks
+
+Title: Unoptimized Databricks Clusters Inflating Cloud Spend
+
+Description: The data engineering team has been running large Apache Spark clusters on Databricks continuously for exploratory data analysis. If cluster auto-termination and sizing are not strictly managed, we risk exceeding our monthly Azure budget by over 40%.
+
+Probability: Medium (40%)
+
+Impact: Low (Financial impact, does not affect technical delivery)
+
+Mitigation Strategy: Implement strict Terraform policies enforcing 30-minute auto-termination on all interactive Databricks clusters. Transition all scheduled jobs to automated, single-use job clusters.
+
+Owner: Alex Kumar (Backend Architect)
+
+Current Status: MONITORING
+
+Dependencies: None.
+
+5. RSK-05: ML Model Overfitting on Supply Chain Shocks
+
+Title: Overfitting on 2020-2021 Pandemic Supply Chain Data
+
+Description: Global supply chains were highly anomalous during the COVID-19 pandemic. If the forecasting models treat this period as standard historical data, they will drastically over-predict lead times and recommend unnecessarily high safety stock levels, defeating the project's ROI objectives.
+
+Probability: High (70%)
+
+Impact: High (Results in massive inventory overstocking)
+
+Mitigation Strategy: Statistically isolate and truncate training data prior to January 2022. Use synthetic data generation for standard edge-case testing rather than relying on pandemic-era anomalies.
+
+Owner: Priya Patel (Lead Data Scientist)
+
+Current Status: MITIGATION IN PROGRESS.

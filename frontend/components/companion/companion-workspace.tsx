@@ -1,20 +1,15 @@
 "use client"
-import { post } from "@/lib/api"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+import { get, post } from "@/lib/api"
 import { useEffect, useRef, useState } from "react"
 import {
   ArrowUp,
   Sparkles,
   PanelRight,
-  Paperclip,
-  Mic,
   Loader2,
   Bot,
-  FileText,
-  ShieldAlert,
-  Database,
-  ListChecks,
 } from "lucide-react"
-import { ConversationHistory } from "@/components/companion/conversation-history"
 import { ExecutionDrawer } from "@/components/companion/execution-drawer"
 import { loadingStages } from "@/lib/companion-data"
 import { cn } from "@/lib/utils"
@@ -29,37 +24,16 @@ type Message =
       text: string
     }
 
-const suggestedActions = [
-  {
-    icon: FileText,
-    title: "Summarize Project Alpha",
-    prompt: "Summarize the current status of Project Alpha.",
-  },
-  {
-    icon: ShieldAlert,
-    title: "Find project risks",
-    prompt: "Identify the top delivery risks across active projects.",
-  },
-  {
-    icon: Database,
-    title: "Search knowledge base",
-    prompt: "Search enterprise knowledge for our data retention policy.",
-  },
-  {
-    icon: ListChecks,
-    title: "Meeting summary",
-    prompt: "Extract action items from the latest leadership sync.",
-  },
-]
-
 export function CompanionWorkspace() {
-  const [activeConversation, setActiveConversation] = useState<string | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
   const [loadingStage, setLoadingStage] = useState(0)
   const [drawerOpen, setDrawerOpen] = useState(false)
 
+  // Execution telemetry state
+  const [executionData, setExecutionData] = useState<any>(null)
+  
   const scrollRef = useRef<HTMLDivElement>(null)
   const timers = useRef<ReturnType<typeof setTimeout>[]>([])
 
@@ -80,7 +54,6 @@ export function CompanionWorkspace() {
 
     setInput("")
 
-    // Show the user's message immediately
     setMessages((m) => [
       ...m,
       {
@@ -96,6 +69,16 @@ export function CompanionWorkspace() {
         query: value,
       })
 
+      // Capture real telemetry
+      if (result.data) {
+        setExecutionData({
+          metadata: result.data.metadata,
+          telemetry: result.data.telemetry,
+          nodeHistory: result.data.node_history,
+          status: result.data.status
+        })
+      }
+
       setMessages((m) => [
         ...m,
         {
@@ -103,14 +86,15 @@ export function CompanionWorkspace() {
           text: result.data.response,
         },
       ])
-    } catch (error) {
+    } catch (error: any) {
       console.error(error)
 
+      // Injecting actual backend error
       setMessages((m) => [
         ...m,
         {
           role: "assistant",
-          text: "Unable to contact the backend.",
+          text: error.message || "Unable to contact the backend.",
         },
       ])
     } finally {
@@ -118,51 +102,19 @@ export function CompanionWorkspace() {
     }
   }
 
-  function handleSelect(id: string) {
-    setActiveConversation(id)
-    setMessages([
-      { 
-        role: "user", 
-        text: "Summarize Project Alpha" 
-      }, 
-      { 
-        role: "assistant", 
-        text: "Conversation history will be available soon." 
-      }
-    ])
-  }
-
-  function handleNew() {
-    setActiveConversation(null)
-    setMessages([])
-    setLoading(false)
-    setDrawerOpen(false)
-  }
-
   return (
     <div className="flex h-[calc(100dvh-9rem)] min-h-[560px] overflow-hidden rounded-2xl border border-border bg-card/30 backdrop-blur">
-      {/* Left panel — conversation history (~28%) */}
-      <div className="hidden w-[28%] min-w-[240px] max-w-[320px] shrink-0 border-r border-border bg-sidebar/40 lg:flex">
-        <ConversationHistory
-          activeId={activeConversation}
-          onSelect={handleSelect}
-          onNewConversation={handleNew}
-        />
-      </div>
-
-      {/* Right panel — conversation workspace (~72%) */}
+      
+      {/* Right panel — conversation workspace (Now spans full width) */}
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Compact header */}
         <div className="flex h-14 items-center gap-3 border-b border-border px-4 md:px-6">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
-            <Sparkles className="h-4 w-4" />
-          </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold tracking-tight text-foreground">
-              AI Companion
+              Enterprise AI Companion
             </p>
             <p className="truncate text-[11px] text-muted-foreground">
-              Enterprise Intelligence Assistant
+              Enterprise Intelligence Platform
             </p>
           </div>
           {hasConversation ? (
@@ -180,9 +132,9 @@ export function CompanionWorkspace() {
         {/* Messages / welcome state */}
         <div ref={scrollRef} className="flex-1 overflow-y-auto">
           {!hasConversation ? (
-            <WelcomeState onPrompt={send} />
+            <WelcomeState /> 
           ) : (
-            <div className="mx-auto max-w-3xl space-y-6 px-4 py-8 md:px-6">
+            <div className="mx-auto max-w-3xl space-y-8 px-4 py-8 md:px-6">
               {messages.map((m, i) =>
                 m.role === "user" ? (
                   <div key={i} className="flex justify-end">
@@ -192,16 +144,18 @@ export function CompanionWorkspace() {
                   </div>
                 ) : (
                   <div key={i} className="flex gap-3">
-                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
                       <Bot className="h-4 w-4" />
                     </span>
-                    <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-border bg-card/60 p-4 backdrop-blur">
-                      <div className="whitespace-pre-wrap text-sm leading-relaxed text-foreground">
-                        {m.text}
-                      </div>
+                    <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-border bg-card/80 p-6 shadow-sm backdrop-blur md:p-7">
+                      <article className="prose prose-sm prose-invert max-w-none prose-headings:scroll-m-20 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-white prose-h1:mb-6 prose-h1:mt-2 prose-h1:text-3xl prose-h1:border-b prose-h1:border-border prose-h1:pb-3 prose-h2:mb-5 prose-h2:mt-10 prose-h2:border-b prose-h2:border-border/70 prose-h2:pb-2 prose-h2:text-xl prose-h3:mb-3 prose-h3:mt-8 prose-h3:text-lg prose-p:leading-8 prose-p:text-muted-foreground prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-strong:text-white prose-ul:my-5 prose-ol:my-5 prose-li:my-2 prose-table:my-8 prose-table:w-full prose-table:border-collapse prose-table:overflow-hidden prose-thead:border-b prose-thead:border-border prose-tr:border-b prose-tr:border-border/60 prose-th:bg-muted/40 prose-th:px-5 prose-th:py-3 prose-th:text-left prose-th:text-xs prose-th:uppercase prose-th:tracking-wider prose-td:border-border prose-td:px-5 prose-td:py-4 prose-td:align-top prose-hr:my-10 prose-hr:border-border prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-primary prose-pre:rounded-xl prose-pre:border prose-pre:border-border prose-pre:bg-muted/40 prose-pre:p-5 lg:prose-base">
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                          {m.text}
+                        </ReactMarkdown>
+                      </article>
                     </div>
                   </div>
-                ),
+                )
               )}
               {loading ? <LoadingState stage={loadingStage} /> : null}
             </div>
@@ -212,13 +166,6 @@ export function CompanionWorkspace() {
         <div className="border-t border-border p-3 md:p-4">
           <div className="mx-auto max-w-3xl">
             <div className="flex items-end gap-1.5 rounded-2xl border border-border bg-background/60 p-2 transition-colors focus-within:border-ring focus-within:ring-3 focus-within:ring-ring/30">
-              <button
-                type="button"
-                aria-label="Attach document"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <Paperclip className="h-4 w-4" />
-              </button>
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -234,19 +181,10 @@ export function CompanionWorkspace() {
                   }
                 }}
                 rows={1}
-                placeholder="Ask about projects, enterprise knowledge, risks, meetings, or requirements…"
+                placeholder='Example: "Summarize project customer_portal"'
                 aria-label="Message AI Companion"
-                className="max-h-40 min-h-9 flex-1 resize-none bg-transparent px-1 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                className="max-h-40 min-h-10 flex-1 resize-none bg-transparent px-3 py-3 text-sm text-foreground placeholder:text-muted-foreground outline-none"
               />
-              {/* Reserved for future microphone support */}
-              <button
-                type="button"
-                aria-label="Voice input (coming soon)"
-                disabled
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-muted-foreground/50"
-              >
-                <Mic className="h-4 w-4" />
-              </button>
               <button
                 type="button"
                 onClick={() => send(input)}
@@ -268,40 +206,44 @@ export function CompanionWorkspace() {
         </div>
       </div>
 
-      {/* Optional execution inspector drawer */}
-      <ExecutionDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      {/* Execution Drawer wired to state */}
+      <ExecutionDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} data={executionData} />
     </div>
   )
 }
 
-function WelcomeState({ onPrompt }: { onPrompt: (text: string) => void }) {
+function WelcomeState() {
   return (
-    <div className="mx-auto flex h-full max-w-2xl flex-col items-center justify-center px-4 py-10 md:px-6">
+    <div className="mx-auto flex max-w-2xl flex-col items-center justify-start px-4 pb-6 pt-14 md:px-6">
       <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary">
         <Sparkles className="h-6 w-6" />
       </span>
-      <h2 className="mt-5 text-balance text-center text-xl font-semibold tracking-tight text-foreground md:text-2xl">
-        Ask the Enterprise AI Companion
+      <h2 className="mt-3 text-balance text-center text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+        Enterprise AI Companion
       </h2>
-      <p className="mt-3 max-w-md text-pretty text-center text-sm leading-relaxed text-muted-foreground">
-        Search across enterprise documents, understand project context, and generate structured
-        intelligence grounded in your organization&apos;s knowledge.
+      <p className="mt-2 max-w-md text-pretty text-center text-sm leading-relaxed text-muted-foreground">
+        Ask questions about enterprise projects, retrieve knowledge, identify delivery risks and generate executive insights.
       </p>
 
-      <div className="mt-9 grid w-full grid-cols-1 gap-3 sm:grid-cols-2">
-        {suggestedActions.map((action) => (
-          <button
-            key={action.title}
-            type="button"
-            onClick={() => onPrompt(action.prompt)}
-            className="group flex items-center gap-3 rounded-xl border border-border bg-card/60 px-4 py-3 text-left transition-colors hover:border-primary/40 hover:bg-card"
-          >
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-background/60 text-primary transition-colors group-hover:border-primary/40">
-              <action.icon className="h-4 w-4" />
-            </span>
-            <span className="text-sm font-medium text-foreground">{action.title}</span>
-          </button>
-        ))}
+      <div className="mt-8 w-full max-w-2xl rounded-xl border border-border/60 bg-muted/20 p-5 shadow-sm md:p-6">
+        <h3 className="mb-4 text-sm font-semibold text-foreground">Try asking:</h3>
+        <ul className="space-y-3 text-muted-foreground">
+          <li className="flex gap-2 text-sm font-medium">
+            <span className="font-mono text-primary/60">&gt;</span> Summarize project customer_portal
+          </li>
+          <li className="flex gap-2 text-sm font-medium">
+            <span className="font-mono text-primary/60">&gt;</span> Identify risks in inventory_management_ai
+          </li>
+          <li className="flex gap-2 text-sm font-medium">
+            <span className="font-mono text-primary/60">&gt;</span> Extract action items from recruitment_platform
+          </li>
+          <li className="flex gap-2 text-sm font-medium">
+            <span className="font-mono text-primary/60">&gt;</span> Generate executive insights for manufacturing_dashboard
+          </li>
+          <li className="flex gap-2 text-sm font-medium">
+            <span className="font-mono text-primary/60">&gt;</span> Summarize the latest meeting for healthcare_appointment_system
+          </li>
+        </ul>
       </div>
     </div>
   )
@@ -310,7 +252,7 @@ function WelcomeState({ onPrompt }: { onPrompt: (text: string) => void }) {
 function LoadingState({ stage }: { stage: number }) {
   return (
     <div className="flex gap-3">
-      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
+      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary">
         <Bot className="h-4 w-4" />
       </span>
       <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-border bg-card/60 p-4 backdrop-blur">

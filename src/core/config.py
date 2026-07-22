@@ -32,13 +32,15 @@ EMBEDDING_MODEL = "nomic-embed-text"
 # Text Processing Hyperparameters
 CHUNK_SIZE = 500       # Maximum characters per sliced chunk
 CHUNK_OVERLAP = 50     # Overlapping characters between consecutive chunks
-TOP_K = 5              # Number of relevant document chunks to pull during retrieval
+TOP_K = 3          # Number of relevant document chunks to pull during retrieval
 
 # Validated System Projects (Dictionary mapping internal IDs to Display Names)
 PROJECTS = {
-    "customer_portal": "Customer Portal Modernization",
+    "customer_portal_modernization": "Customer Portal Modernization",
     "inventory_management_ai": "Inventory Management AI",
-    "healthcare_appointment_system": "Healthcare Appointment System"
+    "healthcare_appointment_system": "Healthcare Appointment System",
+    "hr_recruitment_platform": "HR Recruitment Platform",
+    "smart_manufacturing_dashboard": "Smart Manufacturing Dashboard"
 }
 # Knowledge Base Settings
 ENTERPRISE_COLLECTION = "enterprise_knowledge"

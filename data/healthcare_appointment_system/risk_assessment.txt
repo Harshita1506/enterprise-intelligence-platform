@@ -1,25 +1,87 @@
-RISK ASSESSMENT
+Project: Intelligent Patient Scheduling Platform (Project CareFlow)
+Document Type: Risk Register & Assessment
+Last Updated: September 16, 2025
 
-High Risk
+1. RSK-01: Legacy EHR (CareSync) API Instability under Load
 
-Model Accuracy below expected threshold.
+Title: CareSync Database Locking and Concurrency Failures
 
-Medium Risk
+Description: The on-premise legacy EHR system cannot process concurrent POST requests for appointment scheduling, throwing HTTP 500 errors. If the asynchronous RabbitMQ queuing strategy fails or introduces unacceptable delays in appointment confirmation, patient trust will erode, and call center volume will increase instead of decreasing.
 
-GPU availability may delay training.
+Probability: Very High (100% - Currently Occurring)
 
-Medium Risk
+Impact: Critical (Directly threatens primary project objective)
 
-Incomplete historical inventory data.
+Mitigation Strategy: 1) Implement RabbitMQ to act as a buffer, strictly throttling write-requests to the EHR to 1 request per second. 2) Escalate to the CareSync vendor's executive team to demand a database patch or dedicated FHIR processing node. 3) Update frontend UX to manage patient expectations regarding confirmation delays.
 
-Low Risk
+Owner: Priya Patel (Backend Lead) / Rohan Sharma (Escalation)
 
-Supplier API documentation delay.
+Current Status: MITIGATION IN PROGRESS (RabbitMQ architecture under development in Sprint 9).
 
-Mitigation
+Dependencies: CareSync vendor support responsiveness.
 
-Increase dataset quality.
+2. RSK-02: HIPAA Compliance Breach via Asynchronous Logging
 
-Schedule GPU usage.
+Title: Unintentional ePHI Exposure in Message Broker Logs
 
-Create backup API mocks.
+Description: By introducing RabbitMQ, we are temporarily storing ePHI (patient names, DOB, chief complaints) in message queues. If these queues or associated debug logs are not strictly encrypted and access-controlled, we risk a HIPAA violation and severe financial penalties.
+
+Probability: Medium (30%)
+
+Impact: Critical (Legal, financial, and reputational ruin)
+
+Mitigation Strategy: Implement application-layer encryption (AES-256) on the JSON payload before it is published to RabbitMQ. Ensure no PHI is ever written to standard output or APM logs (Datadog). Conduct a targeted security audit before Go-Live.
+
+Owner: Emily Davis (QA/Compliance Lead)
+
+Current Status: OPEN
+
+Dependencies: Final sign-off from the corporate Data Privacy Officer.
+
+3. RSK-03: Double Booking of Appointment Slots
+
+Title: Race Condition Leading to Patient Double-Bookings
+
+Description: Because we are caching provider availability in Redis and writing appointments asynchronously, there is a risk that a patient books a slot online precisely as a call-center agent books the same slot in the legacy system.
+
+Probability: High (60%)
+
+Impact: High (Creates clinical operational chaos and patient dissatisfaction)
+
+Mitigation Strategy: The RabbitMQ worker must evaluate the EHR's response. If a double-booking rejection occurs, the system must trigger an automated Twilio SMS notifying the patient of the error and offering the next available slot, while simultaneously flagging the record in the call-center dashboard for follow-up.
+
+Owner: Michael Chen (Integration Engineer)
+
+Current Status: OPEN (Logic to be implemented in Sprint 9).
+
+4. RSK-04: SMS Carrier Filtering (Twilio)
+
+Title: Telecommunication Carriers Blocking Patient Notifications
+
+Description: Due to strict A2P 10DLC regulations, mobile carriers (AT&T, Verizon) may filter or block automated SMS reminders if the traffic is flagged as spam, negating the no-show reduction benefits.
+
+Probability: Medium (40%)
+
+Impact: Medium (Reduces the effectiveness of the waitlist and reminder engines)
+
+Mitigation Strategy: Fully register the healthcare campaign via the Twilio Trust Hub. Utilize a dedicated 10-digit long code exclusively for CareFlow traffic.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: MITIGATION IN PROGRESS.
+
+5. RSK-05: Low Patient Adoption Rates
+
+Title: Patients Refuse to Adopt Digital Scheduling Platform
+
+Description: Even if the software functions perfectly, the target demographic (older patient populations) may prefer to continue calling the clinics directly, resulting in failure to meet the 40% call-volume reduction target.
+
+Probability: Low (20%)
+
+Impact: Medium
+
+Mitigation Strategy: Partner with the clinic operations team to update the IVR (Interactive Voice Response) system to highly encourage digital booking before connecting to an agent. Launch an in-clinic marketing campaign with QR codes.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: MONITORING

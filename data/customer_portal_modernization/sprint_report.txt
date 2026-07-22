@@ -1,0 +1,63 @@
+Project: Customer Portal Modernization (Project Nova)
+Sprint Name: Sprint 14 - Checkout & Data Sync
+Sprint Dates: Jan 30, 2026 – Feb 13, 2026
+Scrum Master: Sarah Johnson
+
+1. Sprint Executive Summary
+Sprint 14 was a challenging but productive iteration. The team successfully finalized the frontend UI for the loyalty dashboard and completely wrapped up the Auth0 SSO integration, pulling us slightly ahead of schedule on the frontend deliverables. However, backend progress was bottlenecked. The Stripe backend integration is currently stalled at 65% completion due to persistent rate limit bugs in our CI/CD pipeline, and the SAP data synchronization tasks were delayed by infrastructure downtime. Overall sprint completion stands at 78% of committed story points.
+
+2. Sprint Metrics
+
+Committed Story Points: 85
+
+Completed Story Points: 66
+
+Spillover Points: 19
+
+Team Velocity: 72 (Rolling 3-sprint average)
+
+Code Coverage: 84.5% (Backend), 88.2% (Frontend)
+
+Open Bugs: 4 (2 High, 2 Low)
+
+3. Completed Tasks & Achievements
+
+NOVA-411: Implement Auth0 Universal Login redirection and token validation middleware in NestJS. (8 points) - Completed
+
+NOVA-415: Build responsive React components for the Loyalty Rewards tier progression bar. (5 points) - Completed
+
+NOVA-418: Set up Datadog APM tracing across the Next.js frontend and NestJS API gateway. (8 points) - Completed
+
+NOVA-422: Refactor the Redux store to support persistent local storage for user preferences. (5 points) - Completed
+
+Team Achievement: The frontend team managed to achieve a Lighthouse performance score of 98 on the new profile dashboard, exceeding the non-functional requirement target.
+
+4. Pending Work (Spillover to Sprint 15)
+
+NOVA-430: Finalize Stripe Webhook handler for asynchronous payment success confirmations. (8 points) - Blocked
+
+NOVA-433: Map legacy SAP XML order payloads to the new GraphQL Order schema. (5 points) - In Progress (Delayed due to SAP downtime)
+
+NOVA-435: E2E automated tests for the complete checkout flow using Cypress. (6 points) - Blocked
+
+5. Current Blockers & Issues
+
+Stripe API Rate Limits: Our automated testing suite generates synthetic transactions faster than the Stripe sandbox allows on the standard tier. This is causing CI/CD pipeline failures, preventing backend merges to the staging branch.
+
+SAP Staging Instability: The legacy SAP staging environment experienced a 48-hour unannounced outage. Developers were unable to query test data, severely slowing down ticket NOVA-433.
+
+6. Technical Debt & Quality Notes
+
+Due to the SAP rate limit constraints identified this sprint, we have to introduce a Redis caching layer (NOVA-450) into Sprint 15. This wasn't originally sized in the architecture plan and represents a slight accumulation of architectural debt that we must immediately address to prevent production outages.
+
+Two High-priority bugs were logged regarding React hydration mismatches on the order history page. Alex Kumar has allocated 4 hours in Sprint 15 to resolve these.
+
+7. Upcoming Sprint 15 Goals
+
+Unblock and finalize the Stripe webhook integration.
+
+Implement the Redis caching strategy for SAP order synchronization.
+
+Complete end-to-end Cypress testing for the Auth0 login and Stripe payment flows.
+
+Begin infrastructure load testing using k6.

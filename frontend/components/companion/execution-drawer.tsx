@@ -1,15 +1,17 @@
 "use client"
 
 import { useEffect } from "react"
-import { ExecutionInspector } from "@/components/companion/execution-inspector"
+import { ExecutionInspector, type ExecutionData } from "@/components/companion/execution-inspector"
 import { cn } from "@/lib/utils"
 
 export function ExecutionDrawer({
   open,
   onClose,
+  data,
 }: {
   open: boolean
   onClose: () => void
+  data?: ExecutionData
 }) {
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -43,7 +45,7 @@ export function ExecutionDrawer({
           open ? "translate-x-0" : "translate-x-full",
         )}
       >
-        <ExecutionInspector onClose={onClose} />
+        <ExecutionInspector onClose={onClose} data={data} />
       </aside>
     </>
   )

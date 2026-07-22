@@ -1,0 +1,48 @@
+Project: Automated Inventory Intelligence (Project Sentinel)
+Document Type: Weekly Executive Stakeholder Update
+Reporting Period: Week ending October 30, 2025
+Prepared By: Sarah Johnson (Lead Product Manager)
+To: Michael Chen (VP of Global Supply Chain), Executive Steering Committee
+
+1. Executive Summary & Current Health
+
+Overall Project Status: YELLOW (Caution - Data dependencies)
+
+Budget Health: GREEN (On Track)
+
+Timeline Health: YELLOW (At Risk of 2-week slip in ML milestones)
+
+Scope: AMENDED (Shift to Human-in-the-Loop MVP)
+
+Project Sentinel has reached a critical juncture in the data ingestion and modeling phase. While our cloud infrastructure and frontend application development are progressing smoothly and ahead of schedule, the core machine learning deliverables have encountered significant friction. We have uncovered systemic data hygiene issues within our legacy NetSuite ERP, and have identified that a key vendor lacks the technological maturity to support our real-time architecture. As a result, we have strategically pivoted the product scope to ensure safety and reliability over pure autonomy.
+
+2. Major Achievements
+
+Infrastructure Provisioned: All foundational Azure infrastructure, including the Kubernetes clusters, Data Factory pipelines, and secure networking, has been successfully deployed and validated by the infosec team.
+
+Frontend UI Approved: The Vue.js procurement dashboard designs have been built and signed off by the QA team, demonstrating excellent performance metrics.
+
+Security Integration: Single Sign-On (SSO) via Azure Active Directory is fully operational, ensuring secure access to the internal platform.
+
+3. Key Blockers & Risks
+
+NetSuite Data Corruption (Critical): We discovered that 35% of historical Purchase Orders in our ERP are missing actual receiving dates. This data is the lifeblood of our machine learning forecasting model. The data science team is currently paused on model training and is instead writing complex scripts to reconstruct this data from secondary warehouse logs.
+
+Vendor API Limitations: FastenCo, our largest fastener supplier, cannot support the real-time API integrations we designed. Their systems time out under our query load. We are being forced to fall back to a legacy nightly batch-file transfer system, which reduces our inventory visibility for FastenCo from real-time to a 24-hour delay.
+
+4. Executive Recommendations & Escalations
+
+Scope Amendment (Approved): Based on the data quality risks and vendor limitations, I recommended, and Michael Chen approved, shifting Phase 1 from a fully autonomous purchasing AI to a "Human-in-the-Loop" recommendation engine. The system will draft POs, but a human buyer must review the AI's logic and approve the execution. This protects the business from rogue algorithmic spending while data hygiene improves.
+
+Vendor Management Escalation: We request that the procurement executive team exert pressure on FastenCo account leadership. Their lack of modern API infrastructure is actively hindering our digital transformation efforts. We need them to prioritize upgrading their B2B integration capabilities in Q1 2026.
+
+5. Upcoming Milestones (Next 14 Days)
+
+November 3: Target completion for the NetSuite data reconstruction and backfilling effort.
+
+November 5: Establish and test the nightly SFTP batch data transfer with FastenCo.
+
+November 15: Milestone 2 Deadline - Baseline ML Model Training & Backtesting. (Currently at high risk; dependent on the November 3 data cleanup completion).
+
+6. Client/Business Expectations
+The business should understand that the Phase 1 deployment will focus heavily on augmented intelligence rather than artificial intelligence. The procurement officers will still have final say over all purchasing decisions. The system will dramatically reduce their manual calculation time, but it will not replace the final human approval step until we achieve 99% data hygiene in our ERP systems.

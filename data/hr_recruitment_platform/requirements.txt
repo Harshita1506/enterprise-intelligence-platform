@@ -1,0 +1,72 @@
+Project Name: NextGen Talent Acquisition Platform (Project HireStream)
+Document Version: 2.0.4
+Industry: Human Resources
+Prepared By: Sarah Johnson (Lead Product Manager)
+Last Updated: February 10, 2026
+
+1. Project Objectives
+Project HireStream is an enterprise-wide digital transformation initiative designed to replace our fragmented, 12-year-old legacy Applicant Tracking System (Taleo). The current system requires heavy manual data entry, lacks automated workflow capabilities, and provides a poor candidate experience, contributing to a high candidate drop-off rate of 42% mid-application. HireStream will centralize requisition management, AI-augmented resume screening, automated interview scheduling, and background check initiation into a single unified cloud platform. The primary business objectives are to reduce the average "Time-to-Fill" from 45 days to 28 days, decrease agency spend by 30%, and ensure a seamless, mobile-first application process for candidates.
+
+2. Scope
+Phase 1 of HireStream encompasses the core recruitment lifecycle: Requisition Creation & Approval workflows, the external Candidate Career Site, the AI Resume Parsing and Scoring Engine, Interview Scheduling via Microsoft 365 integration, and Background Check automation via the Checkr API. Offer letter generation utilizing DocuSign eSignature is also included. Post-hire onboarding modules, internal mobility portals, and freelance contractor management are out of scope for Phase 1 and slated for Project Blueprint (Q1 2027).
+
+3. Functional Requirements
+
+Requisition Management: Hiring managers must be able to draft requisitions that automatically route through a dynamic approval chain (Manager -> Director -> Finance -> HRBP) based on departmental budget codes verified against the Workday Core HRIS.
+
+AI Resume Screening: The platform will utilize an integrated Large Language Model (LLM) pipeline to extract candidate skills, experience, and education from PDF/Word documents. It must generate a "Fit Score" (0-100) comparing the parsed data against the requisition requirements.
+
+Automated Scheduling: The system must integrate with the Microsoft Graph API to read interviewer Outlook calendars, identify mutual free time slots, and allow candidates to self-schedule their interviews via a web interface.
+
+Background Checks: Upon candidate acceptance of an offer, the system must automatically call the Checkr API to initiate a standard 7-year criminal and employment verification background check, updating the candidate status via webhooks.
+
+4. Non-Functional Requirements
+
+Compliance & Bias: The AI screening engine must comply strictly with EEOC (Equal Employment Opportunity Commission) guidelines. It must not utilize demographic data, names, or graduation years in its scoring algorithm to prevent age, race, or gender bias. The platform must also be fully GDPR and CCPA compliant, featuring automated data anonymization after 12 months of inactivity.
+
+Availability: The candidate-facing career site must achieve 99.99% uptime, utilizing global CDNs for rapid asset delivery.
+
+Performance: The AI resume parsing process must extract and index data in under 3.5 seconds per document to prevent UI timeouts during candidate application submission.
+
+5. Technical Stack
+
+Frontend: React 18, Next.js (SSR for SEO optimization on job postings), Material-UI components.
+
+Backend: Go (Golang) microservices for high-concurrency processing; Python/FastAPI specifically for the AI processing services.
+
+Database: PostgreSQL for relational data (requisitions, candidates); Elasticsearch for rapid candidate keyword searching; Apache Kafka for asynchronous event streaming (e.g., triggering emails).
+
+Integrations: Workday SOAP/REST APIs (HRIS sync), Microsoft Graph API (Calendaring), Checkr API (Background), DocuSign API (Offers).
+
+Infrastructure: Google Cloud Platform (GCP) - Cloud Run, Cloud SQL, Google Kubernetes Engine (GKE).
+
+6. API Specifications (Key Endpoints)
+
+POST /api/v1/candidates/parse: Accepts a multipart/form-data file upload, returns a structured JSON profile and initial AI fit score.
+
+POST /api/v1/interviews/schedule: Interacts with MS Graph to lock calendar holds for the interviewing panel.
+
+GET /api/v1/integrations/workday/cost-centers: Syncs valid financial cost centers for requisition approval routing.
+
+7. Architecture
+HireStream utilizes a decoupled microservices architecture. The Next.js frontend communicates with a Go-based API Gateway. High-latency tasks, such as PDF text extraction and LLM scoring, are offloaded via Kafka topics to dedicated Python worker nodes. Webhook listeners actively wait for asynchronous status updates from DocuSign and Checkr to move candidates through the Kanban-style hiring manager dashboard.
+
+8. Milestones & Deadlines
+
+M1: Core Infrastructure & Workday Sync: Target March 1, 2026.
+
+M2: AI Resume Parser & Career Site: Target April 15, 2026.
+
+M3: Scheduling & Checkr Integrations: Target May 20, 2026.
+
+M4: UAT & Compliance Review: Target June 15, 2026.
+
+M5: Global Rollout: Target July 10, 2026.
+
+9. Success Metrics
+
+Candidate application completion rate increases from 58% to 85%.
+
+Zero compliance violations flagged during the internal legal audit.
+
+90% of background checks initiated seamlessly without manual HR intervention.

@@ -1,0 +1,61 @@
+Project: Global Factory Command Center (Project Forge)
+Sprint Name: Sprint 9 - Legacy Plant Ingestion & OEE UI
+Sprint Dates: February 20, 2026 – March 06, 2026
+Scrum Master: Sarah Johnson
+
+1. Sprint Executive Summary
+Sprint 9 was a tale of two environments. The frontend and database teams achieved significant wins, successfully deploying the global OEE dashboard for the Texas plant with sub-second query times. However, the Operational Technology (OT) and data ingestion teams hit a major brick wall. Integrating the legacy equipment at the Ohio plant overwhelmed our WAN bandwidth and cloud Kafka clusters with noisy vibration data. We have had to execute a mid-sprint architectural pivot toward heavy Edge Computing, which has caused all Ohio-related integration tickets to spill over.
+
+2. Sprint Metrics
+
+Committed Story Points: 110
+
+Completed Story Points: 72
+
+Spillover Points: 38
+
+Team Velocity: 91 (Rolling 3-sprint average)
+
+Code Coverage: 78.4% (Cloud/Backend), 89.2% (Frontend)
+
+Open Bugs: 8 (1 Critical, 4 High, 3 Low)
+
+3. Completed Tasks & Achievements
+
+FRG-501: Finalize React/Grafana component for Live Plant OEE (Availability, Performance, Quality). (13 points) - Completed
+
+FRG-504: Deploy PyTorch anomaly detection model to cloud for Texas plant injection molders. (21 points) - Completed
+
+FRG-510: Optimize TimescaleDB continuous aggregates for daily and weekly OEE rollups. (8 points) - Completed
+
+FRG-515: Implement Auth0 Role-Based Access Control (Plant Managers vs. Corporate Executives). (5 points) - Completed
+
+Team Achievement: The frontend team successfully integrated a 3D digital twin visualization of the Texas facility into the React dashboard using WebGL, allowing executives to visually locate alarming machines.
+
+4. Pending Work (Spillover to Sprint 10)
+
+FRG-520: Connect Ohio legacy Siemens S7 PLCs to AWS IoT Core via Kepware. (13 points) - Blocked due to network bandwidth constraints.
+
+FRG-525: Stream high-frequency CNC vibration data to Kafka. (13 points) - Abandoned cloud approach; refactoring to Edge computing.
+
+FRG-528: Validate data consistency between Ohio physical counts and digital OEE. (12 points) - Blocked by FRG-520.
+
+5. Current Blockers & Issues
+
+Ohio Bandwidth Limitations (Critical Blocker): The Ohio plant's network cannot handle streaming raw, uncompressed 1000Hz sensor data. This caused massive packet loss and crashed our Kafka brokers. We are completely blocked on Ohio until industrial Edge servers are procured and installed to aggregate the data locally.
+
+Procurement Lead Times: The Dell Edge Gateways we need to solve the bandwidth issue have a 4-week lead time, pushing the Ohio Go-Live date out by a minimum of one month.
+
+6. Technical Debt & Quality Notes
+
+Kafka Auto-Scaling: The sprint exposed a flaw in our Amazon MSK auto-scaling configuration. When Ohio flooded the broker, it did not scale storage quickly enough, resulting in dropped partitions. Priya Patel has added a high-priority ticket to Sprint 10 to adjust the scaling thresholds.
+
+OT/IT security policies are slowing down deployment. Because engineers cannot remote into the factory floor, Michael Chen loses 2 days to travel every time a legacy PLC requires manual configuration.
+
+7. Upcoming Sprint 10 Goals
+
+Proceed with the Munich plant integration, as they utilize modern, bandwidth-efficient equipment.
+
+Write and test the local AWS Greengrass Lambda functions (Edge ML) in a simulated environment while waiting for the Ohio hardware.
+
+Resolve the MSK auto-scaling technical debt.

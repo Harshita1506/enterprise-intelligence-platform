@@ -1,13 +1,28 @@
 const API_BASE = "http://127.0.0.1:8000";
 
-export async function get(path: string) {
-  const response = await fetch(`${API_BASE}${path}`);
+async function parseResponse(response: Response) {
+  let json: any = null;
 
-  if (!response.ok) {
-    throw new Error("API request failed");
+  try {
+    json = await response.json();
+  } catch {
+    // Ignore JSON parsing errors and fall back to generic messages.
   }
 
-  return response.json();
+  if (!response.ok) {
+    throw new Error(
+      json?.detail ??
+      json?.message ??
+      `Request failed with status ${response.status}`
+    );
+  }
+
+  return json;
+}
+
+export async function get(path: string) {
+  const response = await fetch(`${API_BASE}${path}`);
+  return parseResponse(response);
 }
 
 export async function post(path: string, body: any) {
@@ -19,9 +34,5 @@ export async function post(path: string, body: any) {
     body: JSON.stringify(body),
   });
 
-  if (!response.ok) {
-    throw new Error("API request failed");
-  }
-
-  return response.json();
+  return parseResponse(response);
 }

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Menu, Search, User, LogOut } from "lucide-react"
+import { Menu, User, LogOut } from "lucide-react"
 
 export function WorkspaceTopNav({ onMenuClick }: { onMenuClick: () => void }) {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -28,15 +28,13 @@ export function WorkspaceTopNav({ onMenuClick }: { onMenuClick: () => void }) {
         <Menu className="h-5 w-5" />
       </button>
 
-      {/* Global search */}
-      <div className="relative flex-1 md:max-w-xl">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="search"
-          placeholder="Search projects or knowledge…"
-          aria-label="Global search"
-          className="h-9 w-full rounded-lg border border-input bg-card/60 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-colors focus:border-ring focus:ring-3 focus:ring-ring/40"
-        />
+      <div className="flex-1">
+        <h1 className="text-lg font-semibold text-foreground">
+          Enterprise Intelligence Platform
+        </h1>
+        <p className="text-xs text-muted-foreground">
+          AI-powered knowledge and project intelligence
+        </p>
       </div>
 
       <div className="ml-auto flex items-center gap-2">

@@ -12,7 +12,7 @@ class DashboardStats(BaseModel):
 class AttentionItem(BaseModel):
     project: str
     title: str
-    severity: str
+    status: str
 
 
 class AIUpdate(BaseModel):

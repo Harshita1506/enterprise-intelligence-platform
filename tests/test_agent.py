@@ -9,10 +9,11 @@ def run_agent_test():
         return
 
     queries = [
-        "Summarize the customer_portal.",
-        "What are the blockers for customer_portal?",
-        "Thanks for your help today."
-    ]
+    "Summarize customer_portal",
+    "Find risks in customer_portal",
+    "Who owns pending tasks in customer_portal?",
+    "Give executive insights for customer_portal"
+]
 
     for i, query in enumerate(queries, 1):
         print(f"\nExecuting Query {i}: '{query}'")

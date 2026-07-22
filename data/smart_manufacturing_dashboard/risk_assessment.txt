@@ -1,0 +1,89 @@
+Project: Global Factory Command Center (Project Forge)
+Document Type: Risk Register & Assessment
+Last Updated: March 07, 2026
+
+1. RSK-01: Cloud Ingestion Latency and Network Saturation
+
+Title: Raw Sensor Data Overwhelming Factory WAN
+
+Description: Attempting to stream raw, high-frequency vibration data (1000Hz) from legacy CNC machines is saturating the Ohio factory's outbound internet connection. This causes latency to spike to 4+ seconds, missing our 200ms SLA, and frequently drops packets, corrupting the predictive maintenance models.
+
+Probability: Very High (100% - Currently Occurring)
+
+Impact: Critical (Stops Ohio plant deployment)
+
+Mitigation Strategy: Shift from a "Cloud-Heavy" to an "Edge-Heavy" architecture. Procure and install on-premise edge servers running AWS IoT Greengrass to filter, compress, and run initial FFT transformations locally, drastically reducing outbound payload sizes.
+
+Owner: Priya Patel (Data Lead) / Michael Chen (OT Lead)
+
+Current Status: MITIGATION IN PROGRESS (Pending hardware delivery).
+
+Dependencies: Hardware supply chain lead times.
+
+2. RSK-02: OT/IT Security Airgap Violations
+
+Title: Ransomware Vulnerability via IoT Integration
+
+Description: By connecting legacy, unpatched factory PLCs to a cloud-connected gateway, we risk creating a bridge for IT-based malware (e.g., ransomware) to penetrate the OT network, potentially causing catastrophic physical damage or halting global production.
+
+Probability: Low (15%)
+
+Impact: Catastrophic (Multimillion-dollar loss, safety risk)
+
+Mitigation Strategy: Strict enforcement of the Purdue Enterprise Reference Architecture. Implement unidirectional gateway proxies (data diodes) where possible. Deny all inbound firewall rules from the corporate IT network to the factory floor; the edge devices must use outbound-only MQTT over TLS 1.2.
+
+Owner: Emily Davis (QA/Security)
+
+Current Status: OPEN (Strictly enforced, actively causing deployment friction).
+
+Dependencies: Continual auditing by the InfoSec team.
+
+3. RSK-03: Supply Chain Delays for Edge Hardware
+
+Title: Procurement Lead Times Delaying Milestone 3
+
+Description: The pivot to Edge computing requires specific industrial-grade servers capable of surviving factory floor temperatures and vibration. Current global supply chain constraints indicate a 4-to-6 week lead time for these units.
+
+Probability: High (80%)
+
+Impact: Medium (Delays Ohio integration, but Munich can proceed)
+
+Mitigation Strategy: Request emergency expedited procurement with executive sponsorship. Decouple the Ohio plant rollout schedule from the Munich plant rollout schedule so the overall project momentum is not halted.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: OPEN (Awaiting shipping confirmation).
+
+Dependencies: Hardware vendor inventory.
+
+4. RSK-04: Machine Operator Resistance
+
+Title: Factory Floor Rejection of New Dashboards
+
+Description: Plant managers and machine operators are accustomed to their legacy HMI (Human-Machine Interface) screens. They may view the new centralized OEE dashboards as corporate surveillance rather than a tool to help them, leading to poor adoption and lack of action on predictive alerts.
+
+Probability: Medium (40%)
+
+Impact: High (Destroys project ROI)
+
+Mitigation Strategy: Initiate an aggressive change management campaign. Co-design the tablet views with shift supervisors. Ensure the UI clearly shows how the system prevents stressful, mid-shift machine breakdowns.
+
+Owner: Sarah Johnson (Product Manager)
+
+Current Status: MONITORING
+
+5. RSK-05: TimescaleDB Storage Costs
+
+Title: Runaway Cloud Storage Costs for Time-Series Data
+
+Description: Storing high-resolution sensor data indefinitely will rapidly consume our AWS budget.
+
+Probability: High (60%)
+
+Impact: Low (Financial impact)
+
+Mitigation Strategy: Implement TimescaleDB continuous aggregates to downsample data older than 30 days into hourly averages, and automatically drop raw high-frequency data to cold S3 storage via lifecycle policies.
+
+Owner: Priya Patel (Data Lead)
+
+Current Status: CLOSED (Implemented in Sprint 9).

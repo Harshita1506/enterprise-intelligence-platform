@@ -1,27 +1,54 @@
-PROJECT BETA
+Project: Intelligent Patient Scheduling Platform (Project CareFlow)
+Meeting Type: Sprint 8 Architecture & Blocker Review
+Date: September 14, 2025
+Duration: 60 minutes
+Attendees: Sarah Johnson (Product Manager), Alex Kumar (Frontend Lead), Priya Patel (Backend Lead), Michael Chen (Integration Engineer), Emily Davis (QA/Compliance Lead), Rohan Sharma (Chief Medical Information Officer / Sponsor)
 
-Meeting Notes
+1. Meeting Summary
+The primary objective of Sprint 8 was to finalize the bidirectional integration with the CareSync EHR, specifically focusing on the POST /api/v1/fhir/Appointment (write) endpoint. While the frontend patient portal and Twilio SMS notification engine are progressing ahead of schedule, severe scalability issues have been discovered with the on-premise CareSync system. Under simulated load, the legacy EHR database is locking, resulting in API timeouts and failed appointment bookings.
 
-Date
+2. Key Decisions Made
 
-10 July 2026
+Asynchronous Booking Architecture: Based on Michael Chen's load testing results, Rohan Sharma approved a significant architectural pivot. Instead of synchronous, real-time writes to the EHR, we will implement RabbitMQ as an asynchronous message broker. Patient bookings will be immediately confirmed on the CareFlow frontend and queued in RabbitMQ, then slowly trickled into the CareSync EHR at a rate it can tolerate.
 
-Discussion
+Twilio Short Code Deferral: Emily Davis noted that the compliance approval for a dedicated healthcare SMS short code via Twilio is taking longer than expected. Sarah Johnson decided to launch with a standard 10-digit long code (10DLC) for SMS reminders to prevent timeline slippage, migrating to the short code post-launch.
 
-Machine Learning model accuracy reached 82%.
+EHR Vendor Escalation: It was decided that our internal teams have exhausted their optimization options for the CareSync database. Rohan Sharma will formally escalate the locking issue to the CareSync VP of Engineering.
 
-Target accuracy is 90%.
+3. Discussion Details & Blockers
 
-Data cleaning is still pending.
+CareSync Concurrency Failure: Priya Patel presented Datadog APM metrics showing that when more than 15 concurrent booking requests hit the CareSync FHIR API, the system throws HTTP 503 (Service Unavailable) or HTTP 500 (Internal Server Error) due to legacy database row-level locking. This makes a synchronous booking flow impossible during peak morning hours.
 
-GPU server availability is limited.
+Patient Experience Concern: Alex Kumar raised a concern that if we use RabbitMQ, there is a small chance a patient books a slot that is theoretically "available" in the cache, but fails to write to the EHR if a call-center agent booked it simultaneously.
 
-Supplier dashboard UI approved.
+Resolution to Double-Booking: The team agreed to implement a "pending confirmation" UI state. The frontend will show "Booking Pending," and the Twilio engine will text the patient a final confirmation once the RabbitMQ worker successfully writes the record to CareSync.
 
-Action Items
+4. Action Items & Assigned Owners
 
-Improve training dataset.
+[Action Item]: Provision a highly available RabbitMQ cluster within the AWS VPC and configure durable queues for the FHIR Write payloads.
 
-Complete barcode API integration.
+Owner: Michael Chen
 
-Finalize analytics dashboard.
+Due Date: Sep 18, 2025
+
+[Action Item]: Rewrite the POST /api/v1/fhir/Appointment endpoint in Node.js to publish to RabbitMQ instead of calling the EHR directly.
+
+Owner: Priya Patel
+
+Due Date: Sep 22, 2025
+
+[Action Item]: Draft an executive escalation letter to CareSync requesting immediate technical support for their database locking issues.
+
+Owner: Rohan Sharma
+
+Due Date: Sep 15, 2025
+
+[Action Item]: Register the Twilio 10DLC (10-digit long code) campaign under the A2P 10DLC healthcare regulations to avoid carrier filtering.
+
+Owner: Emily Davis
+
+Due Date: Sep 17, 2025
+
+5. Pending Approvals
+
+Awaiting final sign-off from the Data Privacy Officer (DPO) regarding the PHI encryption strategy for messages resting in the RabbitMQ queues.
