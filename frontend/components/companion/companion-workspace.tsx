@@ -1,6 +1,5 @@
 "use client"
-import ReactMarkdown from "react-markdown"
-import remarkGfm from "remark-gfm"
+import { MarkdownReport } from "@/components/companion/markdown-report"
 import { get, post } from "@/lib/api"
 import { useEffect, useRef, useState } from "react"
 import {
@@ -148,11 +147,7 @@ export function CompanionWorkspace() {
                       <Bot className="h-4 w-4" />
                     </span>
                     <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-border bg-card/80 p-6 shadow-sm backdrop-blur md:p-7">
-                      <article className="prose prose-sm prose-invert max-w-none prose-headings:scroll-m-20 prose-headings:font-semibold prose-headings:tracking-tight prose-headings:text-white prose-h1:mb-6 prose-h1:mt-2 prose-h1:text-3xl prose-h1:border-b prose-h1:border-border prose-h1:pb-3 prose-h2:mb-5 prose-h2:mt-10 prose-h2:border-b prose-h2:border-border/70 prose-h2:pb-2 prose-h2:text-xl prose-h3:mb-3 prose-h3:mt-8 prose-h3:text-lg prose-p:leading-8 prose-p:text-muted-foreground prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-strong:text-white prose-ul:my-5 prose-ol:my-5 prose-li:my-2 prose-table:my-8 prose-table:w-full prose-table:border-collapse prose-table:overflow-hidden prose-thead:border-b prose-thead:border-border prose-tr:border-b prose-tr:border-border/60 prose-th:bg-muted/40 prose-th:px-5 prose-th:py-3 prose-th:text-left prose-th:text-xs prose-th:uppercase prose-th:tracking-wider prose-td:border-border prose-td:px-5 prose-td:py-4 prose-td:align-top prose-hr:my-10 prose-hr:border-border prose-code:rounded prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:text-primary prose-pre:rounded-xl prose-pre:border prose-pre:border-border prose-pre:bg-muted/40 prose-pre:p-5 lg:prose-base">
-                        <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {m.text}
-                        </ReactMarkdown>
-                      </article>
+                      <MarkdownReport content={m.text} />
                     </div>
                   </div>
                 )

@@ -128,3 +128,143 @@
     @apply bg-background text-foreground;
   }
 }
+/* ============================================================
+   Landing Page Animations
+   ============================================================ */
+
+@keyframes blob {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    transform: translate3d(40px, -30px, 0) scale(1.08);
+  }
+
+  66% {
+    transform: translate3d(-25px, 25px, 0) scale(0.96);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.animate-blob {
+  animation: blob 32s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-blob-slow {
+  animation: blob 40s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-blob-fast {
+  animation: blob 26s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+.animation-delay-8000 {
+  animation-delay: 8s;
+}
+
+/* ------------------------------------------------------------ */
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob,
+  .animate-blob-fast,
+  .animate-blob-slow,
+  .animate-fade-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+/* =========================================================
+   AI FLOW LINES
+========================================================= */
+
+@keyframes waveFloat1 {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-14px) translateX(10px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+@keyframes waveFloat2 {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(16px) translateX(-14px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+@keyframes waveFloat3 {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(-10px) translateX(8px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+@keyframes waveFloat4 {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  50% {
+    transform: translateY(12px) translateX(-10px);
+  }
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+}
+
+.animate-wave-1 {
+  animation: waveFloat1 18s ease-in-out infinite;
+}
+
+.animate-wave-2 {
+  animation: waveFloat2 22s ease-in-out infinite;
+}
+
+.animate-wave-3 {
+  animation: waveFloat3 20s ease-in-out infinite;
+}
+
+.animate-wave-4 {
+  animation: waveFloat4 24s ease-in-out infinite;
+}
