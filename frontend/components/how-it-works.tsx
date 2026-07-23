@@ -1,4 +1,5 @@
 import { Upload, BrainCircuit, Target, ArrowRight } from "lucide-react"
+import { AmbientBackground } from "@/components/backgrounds/ambient-background"
 
 const steps = [
   {
@@ -28,9 +29,11 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="scroll-mt-24 border-y border-border bg-card/30 py-20 md:py-28"
+      className="relative scroll-mt-24 overflow-hidden py-20 md:py-28"
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <AmbientBackground variant="section" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-sm font-medium text-accent">How it works</span>
           <h2 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-foreground md:text-4xl">
@@ -45,9 +48,9 @@ export function HowItWorks() {
         <div className="mt-14 grid items-stretch gap-4 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
           {steps.map((step, index) => (
             <div key={step.step} className="contents">
-              <div className="relative rounded-2xl border border-border bg-card/60 p-7 backdrop-blur">
+              <div className="glass-panel relative rounded-2xl p-7 transition-colors hover:border-accent/30">
                 <div className="flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-border bg-background/60 text-primary">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-accent-2">
                     <step.icon className="h-5 w-5" />
                   </span>
                   <span className="font-mono text-sm text-muted-foreground">
@@ -64,7 +67,7 @@ export function HowItWorks() {
 
               {index < steps.length - 1 && (
                 <div className="flex items-center justify-center py-1 md:py-0">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-accent md:rotate-0">
+                  <span className="glass-panel glow-border-cyan flex h-9 w-9 items-center justify-center rounded-full text-accent-2 md:rotate-0">
                     <ArrowRight className="h-4 w-4 rotate-90 md:rotate-0" />
                   </span>
                 </div>

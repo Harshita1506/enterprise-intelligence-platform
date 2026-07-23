@@ -1,15 +1,12 @@
-
-
 import type { Metadata } from "next"
 import Link from "next/link"
-import { 
-  ArrowLeft, 
-  FileText, 
-  Clock, 
-  Sparkles, 
-  ShieldAlert, 
-  ListTodo, 
-  CheckCircle2 
+import {
+  ArrowLeft,
+  FileText,
+  Sparkles,
+  ShieldAlert,
+  ListTodo,
+  CheckCircle2
 } from "lucide-react"
 import { StatusBadge } from "@/components/workspace/status-badge"
 import { UploadDocument } from "@/components/projects/upload-document"
@@ -78,7 +75,7 @@ export default async function ProjectDetailPage({ params }: Params) {
     priority: "Medium",
     progress: 100,
     lastSummary: project.summary,
-    lastModified: "Just now",
+    
     status:
       project.status === "Active"
         ? "healthy"
@@ -106,24 +103,21 @@ export default async function ProjectDetailPage({ params }: Params) {
           <StatusBadge status={project.status} />
         </div>
         <p className="mt-2 text-muted-foreground">{project.client}</p>
-
         <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
           <span className="rounded-md border border-border bg-background/60 px-2 py-0.5 text-xs font-medium">
             {project.type}
           </span>
+
           <span className="rounded-md border border-border bg-background/60 px-2 py-0.5 text-xs font-medium">
             {project.priority} priority
           </span>
+
           <span className="inline-flex items-center gap-1.5">
             <FileText className="h-3.5 w-3.5" />
             {project.documents} documents
           </span>
-          <span className="inline-flex items-center gap-1.5">
-            <Clock className="h-3.5 w-3.5" />
-            Updated {project.lastModified}
-          </span>
         </div>
-      </div>
+      </div> {/* <-- ADDED MISSING CLOSING DIV HERE */}
 
       {/* Statistics + Executive Summary */}
       <div className="grid gap-4 lg:grid-cols-3">

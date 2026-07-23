@@ -68,7 +68,7 @@ class ProjectResolver:
         # Manual aliases
         # ----------------------------
         aliases = {
-            "customer_portal": [
+            "customer_portal_modernization": [
                 "customer",
                 "portal",
                 "customer portal",
@@ -97,11 +97,13 @@ class ProjectResolver:
                 "recruitment platform",
             ],
 
-            "manufacturing_dashboard": [
+            "smart_manufacturing_dashboard": [
                 "manufacturing",
                 "manufacturing dashboard",
                 "smart manufacturing",
                 "smart manufacturing dashboard",
+                "manufacturing_dashboard",
+                
             ],
         }
 

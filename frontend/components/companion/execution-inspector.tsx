@@ -2,7 +2,6 @@
 
 import {
   Clock,
-  Gauge,
   PanelRightClose,
   Workflow,
   FolderKanban,
@@ -33,11 +32,11 @@ interface ExecutionInspectorProps {
   data?: ExecutionData;
 }
 
-export function ExecutionInspector({ 
-  onClose, 
-  data 
+export function ExecutionInspector({
+  onClose,
+  data
 }: ExecutionInspectorProps) {
-  
+
   if (!data) {
     return (
       <div className="flex h-full items-center justify-center p-4 text-center text-sm text-muted-foreground">
@@ -47,10 +46,6 @@ export function ExecutionInspector({
   }
 
   const { metadata, telemetry, nodeHistory, status } = data
-  
-  // Clamp confidence to a maximum of 100
-  const rawConfidence = metadata?.routing_confidence ? metadata.routing_confidence * 100 : 0
-  const confidencePercent = Math.min(Number(rawConfidence.toFixed(0)), 100)
 
   // Determine badge styling based on final AgentStatus
   const isCompleted = status === "COMPLETED" || status === "completed"
@@ -80,33 +75,18 @@ export function ExecutionInspector({
       </div>
 
       <div className="flex-1 space-y-3 overflow-y-auto p-4">
-        {/* Key metrics */}
-        <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-xl border border-border bg-card/60 p-3.5 backdrop-blur">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Gauge className="h-3.5 w-3.5" />
-              Confidence
-            </div>
-            <p className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
-              {confidencePercent}%
-            </p>
-            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-emerald-400"
-                style={{ width: `${confidencePercent}%` }}
-              />
-            </div>
+        {/* Processing */}
+        <div className="rounded-xl border border-border bg-card/60 p-3.5 backdrop-blur">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" />
+            Processing
           </div>
-          <div className="rounded-xl border border-border bg-card/60 p-3.5 backdrop-blur">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Clock className="h-3.5 w-3.5" />
-              Processing
-            </div>
-            <p className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
-              {telemetry?.total_latency_sec || "0.00"}s
-            </p>
-            <p className="mt-2 text-[11px] text-muted-foreground">End to end</p>
-          </div>
+          <p className="mt-1.5 text-lg font-semibold tracking-tight text-foreground">
+            {telemetry?.total_latency_sec || "0.00"}s
+          </p>
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            End to end
+          </p>
         </div>
 
         {/* Selected Tool */}
@@ -120,25 +100,38 @@ export function ExecutionInspector({
               <Bot className="h-4 w-4" />
             </span>
             <div>
-              <p className="text-sm font-medium text-foreground">{metadata?.tool_used || "NONE"}</p>
-              <p className="text-xs text-muted-foreground">{metadata?.routing_reasoning || "Direct answer processing"}</p>
+              <p className="text-sm font-medium text-foreground">
+                {metadata?.tool_used || "NONE"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {metadata?.routing_reasoning || "Direct answer processing"}
+              </p>
             </div>
           </div>
         </div>
 
         {/* Project Target */}
-        <CollapsibleSection icon={FolderKanban} title="Referenced Projects" defaultOpen meta="1">
+        <CollapsibleSection
+          icon={FolderKanban}
+          title="Referenced Projects"
+          defaultOpen
+          meta="1"
+        >
           <ul className="space-y-1.5">
-             <li className="flex items-center gap-2 text-sm text-foreground/90">
-                <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                {metadata?.project_id || "Unknown"}
-              </li>
+            <li className="flex items-center gap-2 text-sm text-foreground/90">
+              <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+              {metadata?.project_id || "Unknown"}
+            </li>
           </ul>
         </CollapsibleSection>
 
         {/* LangGraph Trace */}
-        <CollapsibleSection icon={Workflow} title="LangGraph Execution Flow" defaultOpen>
-          <ol className="relative space-y-4 pl-1 mt-2">
+        <CollapsibleSection
+          icon={Workflow}
+          title="LangGraph Execution Flow"
+          defaultOpen
+        >
+          <ol className="relative mt-2 space-y-4 pl-1">
             {nodeHistory?.map((node: string, i: number) => (
               <li key={i} className="relative flex gap-3">
                 <div className="flex flex-col items-center">
@@ -149,22 +142,26 @@ export function ExecutionInspector({
                     <span className="mt-1 w-px flex-1 bg-border" />
                   ) : null}
                 </div>
+
                 <div className="-mt-0.5 pb-1">
-                  <p className="text-sm font-medium text-foreground">{node}</p>
+                  <p className="text-sm font-medium text-foreground">
+                    {node}
+                  </p>
+
                   {i === nodeHistory.length - 1 && (
-                     <div className="mt-2 flex items-center gap-1.5">
-                       {isCompleted ? (
-                         <span className="inline-flex items-center gap-1 rounded-md bg-emerald-400/10 px-2 py-1 text-[10px] font-medium text-emerald-400 border border-emerald-400/20">
-                           <CheckCircle2 className="h-3 w-3" />
-                           Completed
-                         </span>
-                       ) : (
-                         <span className="inline-flex items-center gap-1 rounded-md bg-amber-400/10 px-2 py-1 text-[10px] font-medium text-amber-400 border border-amber-400/20">
-                           <AlertTriangle className="h-3 w-3" />
-                           Failed
-                         </span>
-                       )}
-                     </div>
+                    <div className="mt-2 flex items-center gap-1.5">
+                      {isCompleted ? (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-emerald-400/20 bg-emerald-400/10 px-2 py-1 text-[10px] font-medium text-emerald-400">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Completed
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-amber-400/20 bg-amber-400/10 px-2 py-1 text-[10px] font-medium text-amber-400">
+                          <AlertTriangle className="h-3 w-3" />
+                          Failed
+                        </span>
+                      )}
+                    </div>
                   )}
                 </div>
               </li>

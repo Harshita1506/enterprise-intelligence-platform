@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { FileText, Sparkles, Clock, ArrowRight } from "lucide-react"
+import { FileText, Sparkles, ArrowRight } from "lucide-react"
 import { StatusBadge } from "@/components/workspace/status-badge"
 import type { Project } from "@/lib/projects-data"
 
@@ -15,14 +15,14 @@ export function ProjectCard({ project }: { project: Project }) {
           <h3 className="truncate text-base font-semibold tracking-tight text-foreground">
             {project.name}
           </h3>
-          <p className="mt-0.5 truncate text-sm text-muted-foreground">{project.client}</p>
+          <p className="mt-0.5 truncate text-sm text-muted-foreground">
+            {project.client}
+          </p>
         </div>
         <StatusBadge status={project.status} />
       </div>
 
-      
-
-      {/* AI summary — inline, no border box */}
+      {/* AI summary */}
       <div className="mt-4 flex items-start gap-1.5">
         <Sparkles className="mt-0.5 h-3 w-3 shrink-0 text-primary" />
         <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
@@ -32,16 +32,11 @@ export function ProjectCard({ project }: { project: Project }) {
 
       {/* Footer */}
       <div className="mt-4 flex items-center justify-between border-t border-border pt-3.5 text-xs text-muted-foreground">
-        <div className="flex items-center gap-3">
-          <span className="inline-flex items-center gap-1">
-            <FileText className="h-3.5 w-3.5" />
-            {project.documents} docs
-          </span>
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
-            {project.lastModified}
-          </span>
-        </div>
+        <span className="inline-flex items-center gap-1">
+          <FileText className="h-3.5 w-3.5" />
+          {project.documents} docs
+        </span>
+
         <span className="inline-flex shrink-0 items-center gap-1 font-medium text-primary transition-colors group-hover:text-accent">
           Open workspace
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />

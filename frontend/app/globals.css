@@ -2,7 +2,7 @@
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-/* Enterprise Intelligence Platform theme */
+/* Enterprise Intelligence Platform theme — premium enterprise AI (navy / cyan / blue) */
 
 @custom-variant dark (&:is(.dark *));
 
@@ -26,6 +26,8 @@
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-3: var(--accent-3);
   --color-muted-foreground: var(--muted-foreground);
   --color-muted: var(--muted);
   --color-secondary-foreground: var(--secondary-foreground);
@@ -38,6 +40,9 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -51,73 +56,100 @@
 
 :root {
   color-scheme: dark;
-  --background: oklch(0.17 0.015 250);
-  --foreground: oklch(0.96 0.005 250);
-  --card: oklch(0.21 0.017 250);
-  --card-foreground: oklch(0.96 0.005 250);
-  --popover: oklch(0.21 0.017 250);
-  --popover-foreground: oklch(0.96 0.005 250);
-  --primary: oklch(0.65 0.15 235);
-  --primary-foreground: oklch(0.16 0.02 250);
-  --secondary: oklch(0.27 0.02 250);
-  --secondary-foreground: oklch(0.96 0.005 250);
-  --muted: oklch(0.26 0.018 250);
-  --muted-foreground: oklch(0.68 0.02 250);
-  --accent: oklch(0.72 0.13 210);
-  --accent-foreground: oklch(0.16 0.02 250);
+
+  /* Layered navy surfaces (deepest → lightest) */
+  --surface-1: #050b16;
+  --surface-2: #07111f;
+  --surface-3: #081827;
+  --surface-4: #0b1d33;
+
+  --background: #050b16;
+  --foreground: #f8fafc;
+
+  --card: #0b1d33;
+  --card-foreground: #f8fafc;
+  --popover: #081827;
+  --popover-foreground: #f8fafc;
+
+  /* Blue / cyan accent system only — no purple, pink, orange, green, red */
+  --primary: #3b82f6;
+  --primary-foreground: #f8fafc;
+
+  --secondary: #0b1d33;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #0b1d33;
+  --muted-foreground: #94a3b8;
+
+  --accent: #06b6d4;
+  --accent-2: #38bdf8;
+  --accent-3: #60a5fa;
+  --accent-foreground: #f8fafc;
+
   --destructive: oklch(0.62 0.2 25);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.65 0.15 235);
-  --chart-1: oklch(0.65 0.15 235);
-  --chart-2: oklch(0.72 0.13 210);
-  --chart-3: oklch(0.6 0.1 260);
-  --chart-4: oklch(0.55 0.09 200);
-  --chart-5: oklch(0.8 0.08 220);
-  --radius: 0.75rem;
-  --sidebar: oklch(0.19 0.016 250);
-  --sidebar-foreground: oklch(0.96 0.005 250);
-  --sidebar-primary: oklch(0.65 0.15 235);
-  --sidebar-primary-foreground: oklch(0.16 0.02 250);
-  --sidebar-accent: oklch(0.27 0.02 250);
-  --sidebar-accent-foreground: oklch(0.96 0.005 250);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.65 0.15 235);
+
+  --border: color-mix(in oklab, #f8fafc 10%, transparent);
+  --input: color-mix(in oklab, #f8fafc 14%, transparent);
+  --ring: #38bdf8;
+
+  --chart-1: #3b82f6;
+  --chart-2: #06b6d4;
+  --chart-3: #38bdf8;
+  --chart-4: #60a5fa;
+  --chart-5: #0b1d33;
+
+  --radius: 0.9rem;
+
+  --sidebar: #07111f;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #0b1d33;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: color-mix(in oklab, #f8fafc 10%, transparent);
+  --sidebar-ring: #38bdf8;
 }
 
 .dark {
   color-scheme: dark;
-  --background: oklch(0.17 0.015 250);
-  --foreground: oklch(0.96 0.005 250);
-  --card: oklch(0.21 0.017 250);
-  --card-foreground: oklch(0.96 0.005 250);
-  --popover: oklch(0.21 0.017 250);
-  --popover-foreground: oklch(0.96 0.005 250);
-  --primary: oklch(0.65 0.15 235);
-  --primary-foreground: oklch(0.16 0.02 250);
-  --secondary: oklch(0.27 0.02 250);
-  --secondary-foreground: oklch(0.96 0.005 250);
-  --muted: oklch(0.26 0.018 250);
-  --muted-foreground: oklch(0.68 0.02 250);
-  --accent: oklch(0.72 0.13 210);
-  --accent-foreground: oklch(0.16 0.02 250);
+  --surface-1: #050b16;
+  --surface-2: #07111f;
+  --surface-3: #081827;
+  --surface-4: #0b1d33;
+
+  --background: #050b16;
+  --foreground: #f8fafc;
+  --card: #0b1d33;
+  --card-foreground: #f8fafc;
+  --popover: #081827;
+  --popover-foreground: #f8fafc;
+  --primary: #3b82f6;
+  --primary-foreground: #f8fafc;
+  --secondary: #0b1d33;
+  --secondary-foreground: #f8fafc;
+  --muted: #0b1d33;
+  --muted-foreground: #94a3b8;
+  --accent: #06b6d4;
+  --accent-2: #38bdf8;
+  --accent-3: #60a5fa;
+  --accent-foreground: #f8fafc;
   --destructive: oklch(0.62 0.2 25);
-  --border: oklch(1 0 0 / 9%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.65 0.15 235);
-  --chart-1: oklch(0.65 0.15 235);
-  --chart-2: oklch(0.72 0.13 210);
-  --chart-3: oklch(0.6 0.1 260);
-  --chart-4: oklch(0.55 0.09 200);
-  --chart-5: oklch(0.8 0.08 220);
-  --sidebar: oklch(0.19 0.016 250);
-  --sidebar-foreground: oklch(0.96 0.005 250);
-  --sidebar-primary: oklch(0.65 0.15 235);
-  --sidebar-primary-foreground: oklch(0.16 0.02 250);
-  --sidebar-accent: oklch(0.27 0.02 250);
-  --sidebar-accent-foreground: oklch(0.96 0.005 250);
-  --sidebar-border: oklch(1 0 0 / 9%);
-  --sidebar-ring: oklch(0.65 0.15 235);
+  --border: color-mix(in oklab, #f8fafc 10%, transparent);
+  --input: color-mix(in oklab, #f8fafc 14%, transparent);
+  --ring: #38bdf8;
+  --chart-1: #3b82f6;
+  --chart-2: #06b6d4;
+  --chart-3: #38bdf8;
+  --chart-4: #60a5fa;
+  --chart-5: #0b1d33;
+  --sidebar: #07111f;
+  --sidebar-foreground: #f8fafc;
+  --sidebar-primary: #3b82f6;
+  --sidebar-primary-foreground: #f8fafc;
+  --sidebar-accent: #0b1d33;
+  --sidebar-accent-foreground: #f8fafc;
+  --sidebar-border: color-mix(in oklab, #f8fafc 10%, transparent);
+  --sidebar-ring: #38bdf8;
 }
 
 @layer base {
@@ -128,143 +160,74 @@
     @apply bg-background text-foreground;
   }
 }
-/* ============================================================
-   Landing Page Animations
-   ============================================================ */
 
-@keyframes blob {
-  0% {
-    transform: translate3d(0, 0, 0) scale(1);
+/* ------------------------------------------------------------------ */
+/* Premium glass / glow utilities                                      */
+/* ------------------------------------------------------------------ */
+
+@layer utilities {
+  .glass-panel {
+    background: color-mix(in oklab, var(--surface-4) 55%, transparent);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid color-mix(in oklab, #f8fafc 10%, transparent);
   }
 
-  33% {
-    transform: translate3d(40px, -30px, 0) scale(1.08);
+  .glass-panel-strong {
+    background: color-mix(in oklab, var(--surface-4) 72%, transparent);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid color-mix(in oklab, #f8fafc 12%, transparent);
   }
 
-  66% {
-    transform: translate3d(-25px, 25px, 0) scale(0.96);
+  .glow-border-cyan {
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, #f8fafc 8%, transparent),
+      0 0 0 1px color-mix(in oklab, #06b6d4 18%, transparent);
   }
 
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-}
-
-.animate-blob {
-  animation: blob 32s ease-in-out infinite;
-  will-change: transform;
-}
-
-.animate-blob-slow {
-  animation: blob 40s ease-in-out infinite;
-  will-change: transform;
-}
-
-.animate-blob-fast {
-  animation: blob 26s ease-in-out infinite;
-  will-change: transform;
-}
-
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-.animation-delay-8000 {
-  animation-delay: 8s;
-}
-
-/* ------------------------------------------------------------ */
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  .text-gradient-accent {
+    background: linear-gradient(120deg, #38bdf8 0%, #3b82f6 55%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
 
-.animate-fade-up {
-  animation: fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* ------------------------------------------------------------------ */
+/* Ambient background primitives (grid / noise / waves)                */
+/* ------------------------------------------------------------------ */
+
+.bg-grid-fade {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, #f8fafc 6%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, #f8fafc 6%, transparent) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(65% 55% at 50% 15%, black, transparent 85%);
+  -webkit-mask-image: radial-gradient(65% 55% at 50% 15%, black, transparent 85%);
 }
-/* Respect reduced motion preferences */
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+}
+
+/* Slow "breathing" used by the volumetric glow layers — the shader
+   itself carries the primary motion now, this just keeps the CSS
+   glows from feeling static. */
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.85; }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 10s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-blob,
-  .animate-blob-fast,
-  .animate-blob-slow,
-  .animate-fade-up {
+  .animate-glow-pulse {
     animation: none !important;
-    opacity: 1 !important;
-    transform: none !important;
   }
-}
-/* =========================================================
-   AI FLOW LINES
-========================================================= */
-
-@keyframes waveFloat1 {
-  0% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-14px) translateX(10px);
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-}
-
-@keyframes waveFloat2 {
-  0% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(16px) translateX(-14px);
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-}
-
-@keyframes waveFloat3 {
-  0% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(-10px) translateX(8px);
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-}
-
-@keyframes waveFloat4 {
-  0% {
-    transform: translateY(0px) translateX(0px);
-  }
-  50% {
-    transform: translateY(12px) translateX(-10px);
-  }
-  100% {
-    transform: translateY(0px) translateX(0px);
-  }
-}
-
-.animate-wave-1 {
-  animation: waveFloat1 18s ease-in-out infinite;
-}
-
-.animate-wave-2 {
-  animation: waveFloat2 22s ease-in-out infinite;
-}
-
-.animate-wave-3 {
-  animation: waveFloat3 20s ease-in-out infinite;
-}
-
-.animate-wave-4 {
-  animation: waveFloat4 24s ease-in-out infinite;
 }
