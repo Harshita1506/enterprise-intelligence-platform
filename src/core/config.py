@@ -5,7 +5,7 @@ from pathlib import Path
 # This assumes config.py is inside src/core/
 BASE_DIR = Path(__file__).resolve().parents[2]
 DATA_DIR = BASE_DIR / "data"
-CHROMA_DIR = BASE_DIR / "chroma_db"
+CHROMA_DIR = DATA_DIR / "chroma_db"
 '''
 # Ollama models optimized for 16GB RAM running entirely on CPU
 LLM_MODEL = "qwen2.5:7b"            # Main reasoning model
