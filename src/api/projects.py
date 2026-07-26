@@ -8,6 +8,9 @@ router = APIRouter(
     tags=["Projects"],
 )
 
+# Create a single ProjectService instance when the application starts.
+# This allows the in-memory projects cache to be reused across requests
+# while the application is running.
 service = ProjectService()
 
 

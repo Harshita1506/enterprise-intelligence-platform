@@ -1,14 +1,15 @@
 import type { Metadata } from "next"
 import { Database } from "lucide-react"
+import { API_BASE } from "@/lib/config"
 import { KnowledgeBase } from "@/components/knowledge/knowledge-base"
-
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Knowledge Base — Enterprise Intelligence Platform",
   description:
     "Browse the indexed documents and sources that ground the platform's enterprise intelligence.",
 }
 
-const API_BASE = "http://127.0.0.1:8000"
+
 
 export type KnowledgeDocument = {
   id: string

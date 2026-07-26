@@ -1,5 +1,5 @@
 import { get } from "@/lib/api";
-
+export const dynamic = "force-dynamic";
 import { WorkspaceBrief } from "@/components/dashboard/workspace-brief";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentIntelligence } from "@/components/dashboard/recent-intelligence";

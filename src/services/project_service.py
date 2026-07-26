@@ -1,6 +1,9 @@
+import logging
 from src.models.project_models import ProjectCard, ProjectsResponse, ProjectDetail
 from src.services.project_metadata_service import ProjectMetadataService
 from src.services.intelligence_service import IntelligenceService
+
+logger = logging.getLogger(__name__)
 
 class ProjectService:
     """
@@ -12,7 +15,15 @@ class ProjectService:
         self.metadata_service = ProjectMetadataService()
         self.intelligence = IntelligenceService()
 
+        # In-memory cache for the Projects page response
+        self.projects_cache: ProjectsResponse | None = None
+
     def get_projects(self) -> ProjectsResponse:
+        # Check the cache first
+        if self.projects_cache is not None:
+            logger.info("Returning cached projects.")
+            return self.projects_cache
+
         projects = []
         metadata = self.metadata_service.get_projects_metadata()
 
@@ -37,7 +48,12 @@ class ProjectService:
                 )
             )
 
-        return ProjectsResponse(projects=projects)
+        # Save the result before returning
+        response = ProjectsResponse(projects=projects)
+        self.projects_cache = response
+        logger.info("Projects cached successfully.")
+        
+        return response
         
     def get_project(self, project_id: str):
         projects = self.metadata_service.get_projects_metadata()
@@ -57,11 +73,8 @@ class ProjectService:
             summary = summary_result["data"].executive_summary
         else:
             summary = "Summary unavailable."
-            
-        # ... remainder of the method remains identical ...
 
         # ---------------- Risks ----------------
-
         risk_result = self.intelligence.risk_analyzer.analyze_risks(project_id)
 
         if risk_result["success"]:
@@ -70,7 +83,6 @@ class ProjectService:
             risks = []
 
         # ---------------- Action Items ----------------
-
         action_result = self.intelligence.action_items.extract_tasks(project_id)
 
         if action_result["success"]:

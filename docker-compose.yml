@@ -1,0 +1,39 @@
+
+
+services:
+  backend:
+    container_name: enterprise-backend
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    env_file:
+      - .env
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+
+    restart: unless-stopped
+
+  frontend:
+    container_name: enterprise-frontend
+
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    environment:
+      NEXT_PUBLIC_API_URL: http://backend:8000
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
+
+    restart: unless-stopped

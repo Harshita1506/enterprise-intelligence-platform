@@ -3,6 +3,7 @@ import { FolderKanban } from "lucide-react"
 
 import { ProjectCard } from "@/components/projects/project-card"
 import { get } from "@/lib/api"
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Projects — Enterprise Intelligence Platform",

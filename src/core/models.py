@@ -1,3 +1,4 @@
+
 """
 Core LLM and Embeddings configuration.
 
@@ -55,22 +56,20 @@ def get_llm(
     """
 
     if LLM_PROVIDER.lower() == "groq":
-    
-
         return ChatGroq(
             model=LLM_MODEL,
             temperature=temperature,
-            api_key=os.getenv("GROQ_API_KEY"),
+            api_key=os.getenv("GROQ_API_KEY2"),
             **kwargs,
         )
     elif LLM_PROVIDER.lower() == "openrouter":
         return ChatOpenAI(
-        model=LLM_MODEL,
-        temperature=temperature,
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-        base_url="https://openrouter.ai/api/v1",
-        **kwargs,
-    )
+            model=LLM_MODEL,
+            temperature=temperature,
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1",
+            **kwargs,
+        )
 
     return OllamaLLM(
         model=LLM_MODEL,
@@ -97,21 +96,20 @@ def get_chat_llm(
     """
 
     if LLM_PROVIDER.lower() == "groq":
-
         return ChatGroq(
             model=LLM_MODEL,
             temperature=temperature,
-            api_key=os.getenv("GROQ_API_KEY"),
+            api_key=os.getenv("GROQ_API_KEY2"),
             **kwargs,
         )
     elif LLM_PROVIDER.lower() == "openrouter":
         return ChatOpenAI(
-        model=LLM_MODEL,
-        temperature=temperature,
-        api_key=os.getenv("OPENROUTER_API_KEY"),
-        base_url="https://openrouter.ai/api/v1",
-        **kwargs,
-    )
+            model=LLM_MODEL,
+            temperature=temperature,
+            api_key=os.getenv("OPENROUTER_API_KEY"),
+            base_url="https://openrouter.ai/api/v1",
+            **kwargs,
+        )
 
     return ChatOllama(
         model=LLM_MODEL,
@@ -132,9 +130,12 @@ def get_embeddings():
     """
 
     if EMBEDDING_PROVIDER.lower() == "ollama":
-
         return OllamaEmbeddings(
-            model=EMBEDDING_MODEL
+            model=EMBEDDING_MODEL,
+            base_url=os.getenv(
+                "OLLAMA_BASE_URL",
+                "http://localhost:11434",
+            ),
         )
 
     raise ValueError(
