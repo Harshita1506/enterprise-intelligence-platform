@@ -169,6 +169,21 @@ The platform follows a multi-stage enterprise AI workflow:
 
 # Installation
 
+## Pre-generated Chroma Vector Database
+
+This repository includes a pre-generated Chroma vector database to simplify evaluation and demonstration.
+
+Instead of rebuilding embeddings and indexing all documents during the first startup, the application can immediately perform semantic search over the provided knowledge base.
+
+### Why is it included?
+
+- Faster project setup.
+- Immediate access to AI-powered document retrieval.
+- Consistent demonstration results.
+- Avoids lengthy indexing during evaluation.
+
+> **Note:** In a production environment, the vector database would typically be generated during the document ingestion process rather than being committed to the repository. It is included here solely to improve the demonstration and evaluation experience.
+
 ## Prerequisites
 
 - Python 3.11+
