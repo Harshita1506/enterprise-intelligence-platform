@@ -27,7 +27,7 @@ __pycache__/
 # ChromaDB
 # =========================
 
-chroma_db/
+# ChromaDB is intentionally tracked for deployment
 
 # =========================
 # Frontend (Next.js / React)
