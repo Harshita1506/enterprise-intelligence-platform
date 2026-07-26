@@ -4,7 +4,7 @@ An AI-powered Enterprise Knowledge & Project Intelligence Platform that transfor
 
 The platform enables users to interact with enterprise knowledge using natural language, retrieve project-specific information, generate executive summaries, identify project risks, extract action items, and visualize project health through an interactive dashboard.
 
-Developed as part of an **AI Engineering Internship**, this project demonstrates the practical implementation of modern enterprise AI systems using **LangGraph, LangChain, FastAPI, Next.js, ChromaDB, and Ollama**.
+Developed as part of an **AI Engineering Internship**, this project demonstrates the practical implementation of modern enterprise AI systems using **LangGraph, LangChain, FastAPI, Next.js, ChromaDB, Ollama Embeddings, Groq API, and Docker Compose**.
 
 ---
 
@@ -67,29 +67,35 @@ Interactive dashboard providing:
 
 ---
 
+## Deployment
+
+- Dockerized frontend and backend
+- Docker Compose orchestration
+- Portable local deployment
+- Consistent development and demonstration environment
+
+---
+
 # System Architecture
 
-```
+```text
                           ┌──────────────────────────┐
-                          │     Next.js Frontend      │
+                          │     Next.js Frontend     │
                           └─────────────┬────────────┘
                                         │
                                    REST API
                                         │
                           ┌─────────────▼────────────┐
-                          │     FastAPI Backend       │
+                          │     FastAPI Backend      │
                           └─────────────┬────────────┘
                                         │
               ┌─────────────────────────┼─────────────────────────┐
               │                         │                         │
               ▼                         ▼                         ▼
        LangGraph Workflow      Knowledge Base Services    Project Intelligence
-              │                         │                         │
-              ▼                         ▼                         ▼
-      Semantic Router           Chroma Vector Store       AI Intelligence Tools
-              │
-              ▼
-        Ollama (Llama 3)
+              │                         │
+              ▼                         ▼
+     Groq API (GPT-OSS-20B)     ChromaDB + Ollama Embeddings
 ```
 
 ---
@@ -114,15 +120,18 @@ Interactive dashboard providing:
 - LangChain
 - LangGraph
 - ChromaDB
-- Ollama
+- Groq API
+- Ollama (Embeddings)
 - SQLAlchemy
 - Pydantic
+- Docker
+- Docker Compose
 
 ---
 
 # Project Structure
 
-```
+```text
 enterprise-ai-platform/
 
 ├── frontend/
@@ -148,6 +157,8 @@ enterprise-ai-platform/
 ├── uploads/
 ├── chroma_db/
 ├── requirements.txt
+├── docker-compose.yml
+├── Dockerfile
 └── README.md
 ```
 
@@ -177,18 +188,21 @@ Instead of rebuilding embeddings and indexing all documents during the first sta
 
 ### Why is it included?
 
-- Faster project setup.
-- Immediate access to AI-powered document retrieval.
-- Consistent demonstration results.
-- Avoids lengthy indexing during evaluation.
+- Faster project setup
+- Immediate access to AI-powered document retrieval
+- Consistent demonstration results
+- Avoids lengthy indexing during evaluation
 
 > **Note:** In a production environment, the vector database would typically be generated during the document ingestion process rather than being committed to the repository. It is included here solely to improve the demonstration and evaluation experience.
+
+---
 
 ## Prerequisites
 
 - Python 3.11+
 - Node.js 20+
 - Ollama
+- Docker (optional for containerized deployment)
 
 ---
 
@@ -209,8 +223,6 @@ Create a virtual environment.
 python -m venv venv
 ```
 
-Activate the virtual environment.
-
 Install dependencies.
 
 ```bash
@@ -221,17 +233,13 @@ pip install -r requirements.txt
 
 ## Ollama Setup
 
-Download the required models.
-
-```bash
-ollama pull llama3
-```
+Download the embedding model.
 
 ```bash
 ollama pull nomic-embed-text
 ```
 
-Start the Ollama server.
+Start Ollama.
 
 ```bash
 ollama serve
@@ -249,31 +257,27 @@ npm install
 
 # Running the Application
 
-## Backend
+## Local Development
 
-Start the FastAPI server.
+### Backend
 
 ```bash
 uvicorn main:app --reload
 ```
 
-Backend URL
+Backend:
 
 ```
 http://localhost:8000
 ```
 
----
-
-## Frontend
-
-Start the Next.js development server.
+### Frontend
 
 ```bash
 npm run dev
 ```
 
-Frontend URL
+Frontend:
 
 ```
 http://localhost:3000
@@ -281,10 +285,57 @@ http://localhost:3000
 
 ---
 
+# Docker Deployment
+
+The platform has been fully containerized using Docker and Docker Compose, enabling a reproducible and portable deployment environment.
+
+## Build
+
+```bash
+docker compose build
+```
+
+## Start
+
+```bash
+docker compose up
+```
+
+or
+
+```bash
+docker compose up -d
+```
+
+## Stop
+
+```bash
+docker compose down
+```
+
+The Docker deployment launches:
+
+- Frontend (Next.js)
+- Backend (FastAPI)
+
+Frontend:
+
+```
+http://localhost:3000
+```
+
+Backend API:
+
+```
+http://localhost:8000
+```
+
+---
+
 # API Overview
 
 | Endpoint | Description |
-|-----------|-------------|
+|----------|-------------|
 | `/chat` | AI Companion |
 | `/dashboard` | Dashboard analytics |
 | `/projects` | Project management |
@@ -298,7 +349,7 @@ http://localhost:3000
 
 ## Retrieval-Augmented Generation (RAG)
 
-Enterprise documents are embedded using Ollama embeddings and stored inside ChromaDB. Relevant information is retrieved and supplied to the language model to produce grounded, context-aware responses.
+Enterprise documents are embedded using **Ollama Embeddings** and stored in **ChromaDB**. Relevant information is retrieved and supplied to the **Groq-hosted GPT-OSS-20B model** to produce grounded, context-aware responses.
 
 ---
 
@@ -316,8 +367,6 @@ The platform uses LangGraph to coordinate:
 
 ## Project Intelligence Services
 
-Specialized AI services include:
-
 - Executive summarization
 - Risk analysis
 - Action item extraction
@@ -333,7 +382,7 @@ The dashboard aggregates enterprise information into a unified interface featuri
 
 # Testing
 
-The project includes dedicated testing modules covering:
+The project includes testing for:
 
 - Knowledge base retrieval
 - Semantic routing
@@ -346,16 +395,14 @@ The project includes dedicated testing modules covering:
 
 # Known Limitations
 
-- Optimized for local Ollama deployment.
-- Performance depends on available system resources.
+- Optimized for local Ollama embedding deployment with Groq-hosted inference.
+- Performance depends on available system resources and network latency.
 - PDF preview functionality may vary depending on browser support.
 - Newly uploaded documents may require re-indexing depending on deployment configuration.
 
 ---
 
 # Future Enhancements
-
-Potential future improvements include:
 
 - Multi-user authentication
 - Role-based access control
@@ -382,6 +429,10 @@ This project demonstrates practical implementation of:
 - FastAPI backend development
 - Next.js frontend development
 - Full-stack AI application engineering
+- Docker containerization
+- Docker Compose orchestration
+- Enterprise deployment workflows
+- API-driven AI system integration
 
 ---
 
