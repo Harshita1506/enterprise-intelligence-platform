@@ -142,23 +142,24 @@ enterprise-ai-platform/
 │   ├── public/
 │   └── styles/
 │
-├── backend/
-│   ├── api/
+├── frontend/
+├── src/
 │   ├── core/
-│   ├── models/
-│   ├── services/
-│   ├── week1_rag/
+│   ├── api/
+│   ├── week1_ingestion/
 │   ├── week2_knowledge_base/
 │   ├── week3_project_intelligence/
 │   ├── week4_agents/
-│   ├── week5_langgraph/
-│   └── week5_evaluation/
-│
+│   └── week5_langgraph/
 ├── uploads/
-├── chroma_db/
+├── data/
+│   └── chroma_db/
+├── main.py
 ├── requirements.txt
 ├── docker-compose.yml
 ├── Dockerfile
+├── .env
+├── .env.docker
 └── README.md
 ```
 
@@ -330,7 +331,128 @@ Backend API:
 http://localhost:8000
 ```
 
+
 ---
+
+# Quick Start Guide
+
+## Running Locally
+
+1. Install prerequisites:
+   - Python 3.11+
+   - Node.js 20+
+   - Docker Desktop (optional)
+   - Ollama
+
+2. Pull the embedding model:
+
+```bash
+ollama pull nomic-embed-text
+```
+
+3. Create a `.env` file:
+
+```env
+GROQ_API_KEY2=YOUR_API_KEY
+OLLAMA_BASE_URL=http://127.0.0.1:11434
+```
+
+4. Start Ollama:
+
+```bash
+ollama serve
+```
+
+5. Start the backend from the project root:
+
+```bash
+python -m venv venv
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Backend:
+- http://localhost:8000
+- Swagger: http://localhost:8000/docs
+
+6. Start the frontend:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend:
+- http://localhost:3000
+
+---
+
+## Running with Docker
+
+Create a `.env.docker` file:
+
+```env
+GROQ_API_KEY2=YOUR_API_KEY
+OLLAMA_BASE_URL=http://host.docker.internal:11434
+```
+
+Run:
+
+```bash
+docker compose up --build
+```
+
+Stop:
+
+```bash
+docker compose down
+```
+
+Services:
+- Frontend: http://localhost:3000
+- Backend: http://localhost:8000
+
+---
+
+# Troubleshooting
+
+## Failed to connect to Ollama
+
+Verify:
+
+```bash
+ollama serve
+ollama list
+```
+
+Local:
+`OLLAMA_BASE_URL=http://127.0.0.1:11434`
+
+Docker:
+`OLLAMA_BASE_URL=http://host.docker.internal:11434`
+
+## Backend Import Error
+
+Always start the backend from the project root:
+
+```bash
+uvicorn main:app --reload
+```
+
+---
+
+# Screenshots
+
+Add screenshots here:
+
+- Home Dashboard
+- Projects
+- Knowledge Base
+- AI Companion
+- Document Upload
+- Docker Deployment
+
 
 # API Overview
 
